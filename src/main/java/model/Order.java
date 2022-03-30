@@ -1,5 +1,4 @@
 package model;
-
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,17 +10,18 @@ import javax.persistence.*;
 @Setter
 @Data
 @NoArgsConstructor
-public class UserRole extends DatabaseEntity{
-
+public class Order extends DatabaseEntity {
     @ManyToOne()
     private User user;
+    @ManyToOne()
+    private User admin;
     @Column
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Status status;
+    @Column
+    private int cost;
 
-    public UserRole(Role role, User user) {
-        this.role = role;
-        this.user = user;
+    public Order (int cost) {
+        this.cost = cost;
     }
-
 }

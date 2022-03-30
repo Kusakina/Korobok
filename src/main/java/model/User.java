@@ -13,18 +13,13 @@ import javax.persistence.Entity;
 
 public class User extends DatabaseEntity{
     @Column
-    private int userId;
-    @Column
     private String name;
     @Column
     private String login;
     @Column
     private String password;
 
-    public User (int userId, String name, String login, String password) {
-        this.userId = userId;
+    public User (String name) {
         this.name = name;
-        this.login =login;
-
     }
 }
