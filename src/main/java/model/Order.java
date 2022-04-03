@@ -12,9 +12,9 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Order extends DatabaseEntity {
     @ManyToOne()
-    private User user;
+    private User client;
     @ManyToOne()
-    private User admin;
+    private User manager;
     @Column
     @Enumerated(EnumType.STRING)
     private Status status;

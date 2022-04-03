@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 @Getter
@@ -15,9 +16,10 @@ import javax.persistence.OneToOne;
 public class GameImage {
     @OneToOne
     private Game game;
-
+    @Column
     private String file;
-    public GameImage (String file){
+    public GameImage (Game game, String file){
+        this.game = game;
         this.file = file;
     }
 }
