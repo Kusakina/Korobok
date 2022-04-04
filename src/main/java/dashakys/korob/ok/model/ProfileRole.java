@@ -2,9 +2,7 @@ package dashakys.korob.ok.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -12,18 +10,12 @@ import javax.persistence.*;
 @Entity
 @Data
 @NoArgsConstructor
-public class UserRole extends DatabaseEntity{
+public class ProfileRole extends DatabaseEntity{
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    private User user;
+    private Profile profile;
 
     @Column
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    public UserRole(Role role, User user) {
-        this.role = role;
-        this.user = user;
-    }
-
 }

@@ -21,9 +21,4 @@ public class GameImage extends DatabaseEntity {
     private Game game;
     @Column
     private String file;
-
-    public GameImage (Game game, String file){
-        this.game = game;
-        this.file = file;
-    }
 }

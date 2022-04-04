@@ -5,7 +5,7 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import dashakys.korob.ok.model.Credentials;
-import dashakys.korob.ok.model.User;
+import dashakys.korob.ok.model.Profile;
 import dashakys.korob.ok.repository.CredentialsRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +17,13 @@ public class CredentialsService extends AbstractEntityService<Credentials, Crede
         super(repository);
     }
 
-    public Optional<User> authenticate(String login, String password) {
+    public Optional<Profile> authenticate(String login, String password) {
         try {
-            Optional<Credentials> credentials = repository.findByLoginAndAndPasswordHash(
+            Optional<Credentials> credentials = repository.findByLoginAndPasswordHash(
                     login, Credentials.calculatePasswordHash(password)
             );
 
-            return credentials.map(Credentials::getUser);
+            return credentials.map(Credentials::getProfile);
         } catch (Exception e) {
             throw new EntityServiceException();
         }

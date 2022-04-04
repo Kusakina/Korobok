@@ -1,9 +1,7 @@
 package dashakys.korob.ok.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -14,10 +12,10 @@ import javax.persistence.*;
 public class Order extends DatabaseEntity {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    private User client;
+    private Profile client;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    private User manager;
+    private Profile manager;
 
     @Column
     @Enumerated(EnumType.STRING)

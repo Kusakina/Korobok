@@ -8,12 +8,8 @@ import javax.persistence.Entity;
 @Entity
 @Data
 @NoArgsConstructor
-public class User extends DatabaseEntity {
+public class Profile extends DatabaseEntity {
 
     @Column
     private String name;
-
-    public User (String name) {
-        this.name = name;
-    }
 }
