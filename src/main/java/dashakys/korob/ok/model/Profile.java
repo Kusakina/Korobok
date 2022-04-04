@@ -5,8 +5,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Entity
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class Profile extends DatabaseEntity {
 
