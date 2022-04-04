@@ -1,27 +1,28 @@
 package dashakys.korob.ok.model;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 
-@Getter
-@Setter
+@EqualsAndHashCode(callSuper = true)
+@Entity
 @Data
 @NoArgsConstructor
 public class Order extends DatabaseEntity {
-    @ManyToOne()
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private User client;
-    @ManyToOne()
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private User manager;
+
     @Column
     @Enumerated(EnumType.STRING)
     private Status status;
+
     @Column
     private int cost;
-
-    public Order (int cost) {
-        this.cost = cost;
-    }
 }

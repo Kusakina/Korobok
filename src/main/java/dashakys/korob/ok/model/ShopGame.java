@@ -1,30 +1,25 @@
 package dashakys.korob.ok.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
-@Getter
-@Setter
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @NoArgsConstructor
-
-public class ShopGame {
-    @OneToOne
+public class ShopGame extends DatabaseEntity {
+    @OneToOne(cascade = CascadeType.ALL)
     private Game game;
     @Column
     private int price;
     @Column
     private int count;
-    public ShopGame(int price, int count){
-        this.count = count;
-        this.price = price;
-    }
-
 }

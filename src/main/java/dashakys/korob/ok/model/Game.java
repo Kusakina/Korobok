@@ -1,14 +1,17 @@
 package dashakys.korob.ok.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 
-@Getter
-@Setter
+@EqualsAndHashCode(callSuper = true)
+@Entity
 @Data
 @NoArgsConstructor
 public class Game extends DatabaseEntity {
@@ -22,15 +25,4 @@ public class Game extends DatabaseEntity {
     private int maxPlayers;
     @Column
     private int minPlayers;
-    public Game (String name, String description,
-                 String category,
-                 int maxPlayers,
-                 int minPlayers){
-        this.category = category;
-        this.description = description;
-        this.maxPlayers = maxPlayers;
-        this.minPlayers = minPlayers;
-        this.name = name;
-    }
-
 }

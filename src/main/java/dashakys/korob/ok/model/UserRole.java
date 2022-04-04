@@ -1,20 +1,22 @@
 package dashakys.korob.ok.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 
-@Getter
-@Setter
+@EqualsAndHashCode(callSuper = true)
+@Entity
 @Data
 @NoArgsConstructor
 public class UserRole extends DatabaseEntity{
 
-    @ManyToOne()
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private User user;
+
     @Column
     @Enumerated(EnumType.STRING)
     private Role role;
