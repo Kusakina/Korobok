@@ -11,10 +11,10 @@ import javax.persistence.OneToOne;
 @Entity
 @Data
 @NoArgsConstructor
-public class OrderGame extends DatabaseEntity{
+public class PurchaseGame extends DatabaseEntity{
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    private Order order;
+    private Purchase purchase;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private ShopGame shopGame;
