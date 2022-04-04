@@ -3,7 +3,6 @@ package dashakys.korob.ok;
 import java.util.Scanner;
 
 import dashakys.korob.ok.model.Profile;
-import dashakys.korob.ok.service.GameService;
 import dashakys.korob.ok.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -31,14 +30,16 @@ public class Application implements CommandLineRunner {
 
 		var oldProfiles = profileService.findAll();
 		System.out.println("Old: " + oldProfiles.size());
+		for (Profile profile : oldProfiles) {
+			System.out.println(profile);
+		}
 
-		Profile savedProfile;
 		try (Scanner in = new Scanner(System.in)) {
 			System.out.println("Введите имя профиля:");
 			String name = in.nextLine();
 
 			var profile = new Profile(name);
-			savedProfile = profileService.save(profile);
+			var savedProfile = profileService.save(profile);
 
 			System.out.println("Исходный профиль: " + profile);
 			System.out.println("Сохраненный профиль: " + savedProfile);
@@ -50,9 +51,11 @@ public class Application implements CommandLineRunner {
 			System.out.println(profile);
 		}
 
-		profileService.remove(savedProfile);
+		if (newProfiles.size() > 1) {
+			profileService.remove(newProfiles.get(0));
 
-		var lastProfiles = profileService.findAll();
-		System.out.println("Last: " + lastProfiles.size());
+			var lastProfiles = profileService.findAll();
+			System.out.println("Last: " + lastProfiles.size());
+		}
 	}
 }
