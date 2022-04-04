@@ -4,7 +4,7 @@ import model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import repository.UserRepository;
 
-public abstract class UserService extends AbstractEntityService<User, JpaRepository<User, Long>> {
+public class UserService extends AbstractEntityService<User, JpaRepository<User, Long>> {
 
     private User selectedUser;
 
