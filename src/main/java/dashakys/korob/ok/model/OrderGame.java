@@ -16,16 +16,9 @@ public class OrderGame extends DatabaseEntity{
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private Order order;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private Game game;
-
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private ShopGame shopGame;
 
     @Column
     private int count;
-
-    public OrderGame (int count) {
-        this.count = count;
-    }
 }
