@@ -1,4 +1,4 @@
-package model;
+package dashakys.korob.ok.model;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
