@@ -1,10 +1,14 @@
 package dashakys.korob.ok.service;
 
-import dashakys.korob.ok.model.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-import dashakys.korob.ok.repository.UserRepository;
+import javax.transaction.Transactional;
 
-public class UserService extends AbstractEntityService<User, JpaRepository<User, Long>> {
+import dashakys.korob.ok.model.User;
+import dashakys.korob.ok.repository.UserRepository;
+import org.springframework.stereotype.Service;
+
+@Transactional
+@Service
+public class UserService extends AbstractEntityService<User, UserRepository> {
 
     private User selectedUser;
 
@@ -12,17 +16,8 @@ public class UserService extends AbstractEntityService<User, JpaRepository<User,
         super(userRepository);
     }
 
-    public void select(String login, String password ) {
-        selectedUser.setLogin(login);
-        selectedUser.setPassword(password);
-    }
-
-    public User selectedUser() {
+    public void select(User user) { this.selectedUser = user; }
+    public User getSelectedUser() {
         return selectedUser;
     }
-
-    public User getSelectedUser() {
-        return selectedUser.getValue();
-    }
-
 }

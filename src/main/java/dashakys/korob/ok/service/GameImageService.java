@@ -1,10 +1,15 @@
 package dashakys.korob.ok.service;
 
-import dashakys.korob.ok.model.GameImage;
-import org.springframework.data.jpa.repository.JpaRepository;
+import javax.transaction.Transactional;
 
-public class GameImageService extends AbstractEntityService<GameImage, JpaRepository<GameImage, Long>> {
-        public GameImageService(JpaRepository<GameImage, Long> repository) {
+import dashakys.korob.ok.model.GameImage;
+import dashakys.korob.ok.repository.GameImageRepository;
+import org.springframework.stereotype.Service;
+
+@Transactional
+@Service
+public class GameImageService extends AbstractEntityService<GameImage, GameImageRepository> {
+        public GameImageService(GameImageRepository repository) {
             super(repository);
         }
 }

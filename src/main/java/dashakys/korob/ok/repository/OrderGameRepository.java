@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import dashakys.korob.ok.model.*;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface OrderGameRepository extends EntityRepository<OrderGame> {
     List<OrderGame> findAllByOrder(Order order);
     List<OrderGame> findAllByShopGame(ShopGame shopgame);

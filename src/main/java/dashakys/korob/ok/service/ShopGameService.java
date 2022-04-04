@@ -1,21 +1,15 @@
 package dashakys.korob.ok.service;
 
-import dashakys.korob.ok.model.Game;
-import dashakys.korob.ok.model.ShopGame;
-import org.springframework.data.jpa.repository.JpaRepository;
+import javax.transaction.Transactional;
 
-public class ShopGameService extends AbstractEntityService<ShopGame, JpaRepository<ShopGame, Long>> {
-    private ShopGame selectedShopGame;
-    public ShopGameService(JpaRepository<ShopGame, Long> repository) {
+import dashakys.korob.ok.model.ShopGame;
+import dashakys.korob.ok.repository.ShopGameRepository;
+import org.springframework.stereotype.Service;
+
+@Transactional
+@Service
+public class ShopGameService extends AbstractEntityService<ShopGame, ShopGameRepository> {
+    public ShopGameService(ShopGameRepository repository) {
         super(repository);
-    }
-    public void select(Game game) {
-        selectedShopGame.setGame(game);
-    }
-    public void getPrice() {
-        selectedShopGame.getPrice();
-    }
-    public void getGame() {
-        selectedShopGame.getGame();
     }
 }

@@ -1,28 +1,34 @@
 package dashakys.korob.ok.service;
 
-import dashakys.korob.ok.model.Game;
-import dashakys.korob.ok.model.User;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
 
-public class GameService extends AbstractEntityService<Game, JpaRepository<Game, Long>> {
+import javax.transaction.Transactional;
+
+import dashakys.korob.ok.model.Game;
+import dashakys.korob.ok.repository.GameRepository;
+import org.springframework.stereotype.Service;
+
+@Transactional
+@Service
+public class GameService extends AbstractEntityService<Game, GameRepository> {
+
     private Game selectedGame;
-    public GameService(JpaRepository<Game, Long> repository) {
+
+    public GameService(GameRepository repository) {
         super(repository);
     }
+
     public void select(Long id) {
         selectedGame.setId(id);
     }
 
-    public User selectedGame() {
-        return selectedGame();
+    public Game getSelectedGame() {
+        return selectedGame;
     }
 
-    @Override
-    protected Game findByName(String name) {
+    public Optional<Game> findByName(String name) {
         try {
-            return repository.findByName(
-                    name.getGame()
-            );
+            return repository.findByName(name);
         } catch (Exception e) {
             throw new EntityServiceException();
         }
