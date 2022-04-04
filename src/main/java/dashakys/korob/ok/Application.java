@@ -56,6 +56,9 @@ public class Application implements CommandLineRunner {
 
 			var lastProfiles = profileService.findAll();
 			System.out.println("Last: " + lastProfiles.size());
+			for (Profile profile : lastProfiles) {
+				System.out.println(profile);
+			}
 		}
 	}
 }
