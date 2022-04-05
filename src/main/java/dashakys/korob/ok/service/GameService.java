@@ -50,4 +50,12 @@ public class GameService extends AbstractEntityService<Game, GameRepository> {
 
         return game;
     }
+
+    public List<Game> findAllPurchasedByProfile(Profile profile) {
+        try {
+            return repository.findAllPurchasedByProfile(profile);
+        } catch (Exception e) {
+            throw new EntityServiceException(e);
+        }
+    }
 }
