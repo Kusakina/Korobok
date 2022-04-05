@@ -10,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
 @EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
 @Entity
 @Data
 @NoArgsConstructor
@@ -32,5 +31,14 @@ public class Credentials extends DatabaseEntity {
     public Credentials(String login, long passwordHash) {
         this.login = login;
         this.passwordHash = passwordHash;
+    }
+
+    @Override
+    public String toString() {
+        return "Credentials{" +
+                "profile=" + profile.getName() +
+                ", login='" + login + '\'' +
+                ", passwordHash=" + passwordHash +
+                '}';
     }
 }

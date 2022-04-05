@@ -8,7 +8,6 @@ import javax.persistence.*;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
 @Entity
 @Data
 @NoArgsConstructor
@@ -27,9 +26,19 @@ public class Purchase extends DatabaseEntity {
     @Column
     private int cost;
 
-    public Purchase(Profile client, Profile manager, Status status) {
+    public Purchase(Profile client, Profile manager) {
         this.client = client;
         this.manager = manager;
-        this.status = status;
+        this.status = Status.OPEN;
+    }
+
+    @Override
+    public String toString() {
+        return "Purchase{" +
+                "client=" + client.getName() +
+                ", manager=" + manager.getName() +
+                ", status=" + status +
+                ", cost=" + cost +
+                '}';
     }
 }

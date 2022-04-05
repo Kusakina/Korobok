@@ -189,7 +189,7 @@ public class Application implements CommandLineRunner {
 				var client = readProfile("покупателя", in);
 				var manager = readProfile("продавца", in);
 
-				Purchase purchase = new Purchase(client, manager, Status.OPEN);
+				Purchase purchase = new Purchase(client, manager);
 				purchaseService.save(purchase);
 
 				for (ShopGame shopGame : shopGameService.findAll()) {
