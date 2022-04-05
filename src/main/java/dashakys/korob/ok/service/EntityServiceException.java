@@ -1,3 +1,11 @@
 package dashakys.korob.ok.service;
 
-public class EntityServiceException extends RuntimeException { }
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+public class EntityServiceException extends RuntimeException {
+
+    public EntityServiceException(String message) {
+        super(message);
+    }
+}
