@@ -1,7 +1,9 @@
 package dashakys.korob.ok.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,4 +26,7 @@ public class Game extends DatabaseEntity {
     private int maxPlayers;
     @Column
     private int minPlayers;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private ShopGame shopGame;
 }
