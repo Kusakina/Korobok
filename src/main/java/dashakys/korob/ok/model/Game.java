@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = { "shopGame" })
 @Entity
 @Data
 @NoArgsConstructor
@@ -29,4 +29,8 @@ public class Game extends DatabaseEntity {
 
     @OneToOne(cascade = CascadeType.ALL)
     private ShopGame shopGame;
+
+    public Game(String name) {
+        this.name = name;
+    }
 }
