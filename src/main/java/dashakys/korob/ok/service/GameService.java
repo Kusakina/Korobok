@@ -30,7 +30,7 @@ public class GameService extends AbstractEntityService<Game, GameRepository> {
         try {
             return repository.findByName(name);
         } catch (Exception e) {
-            throw new EntityServiceException();
+            throw new EntityServiceException(e);
         }
     }
 }

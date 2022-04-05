@@ -10,14 +10,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProfileService extends AbstractEntityService<Profile, ProfileRepository> {
 
-    private Profile selectedUser;
+    private Profile selectedProfile;
 
-    public ProfileService(ProfileRepository userRepository) {
-        super(userRepository);
+    public ProfileService(ProfileRepository profileRepository) {
+        super(profileRepository);
     }
 
-    public void select(Profile user) { this.selectedUser = user; }
-    public Profile getSelectedUser() {
-        return selectedUser;
+    public void select(Profile profile) { this.selectedProfile = profile; }
+    public Profile getSelectedProfile() {
+        return selectedProfile;
     }
 }

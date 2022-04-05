@@ -19,7 +19,7 @@ public abstract class AbstractEntityService<
         try {
             return repository.findAll();
         } catch (Exception e) {
-            throw new EntityServiceException();
+            throw new EntityServiceException(e);
         }
     }
 
@@ -28,7 +28,7 @@ public abstract class AbstractEntityService<
         try {
             return repository.save(entity);
         } catch (Exception e) {
-            throw new EntityServiceException();
+            throw new EntityServiceException(e);
         }
     }
 
@@ -37,7 +37,7 @@ public abstract class AbstractEntityService<
         try {
             repository.delete(entity);
         } catch (Exception e) {
-            throw new EntityServiceException();
+            throw new EntityServiceException(e);
         }
     }
 }
