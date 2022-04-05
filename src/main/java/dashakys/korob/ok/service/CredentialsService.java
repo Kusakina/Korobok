@@ -21,6 +21,15 @@ public class CredentialsService extends AbstractEntityService<Credentials, Crede
         this.profileService = profileService;
     }
 
+
+    public Optional<Credentials> findByLogin(String login) {
+        try {
+            return repository.findByLogin(login);
+        } catch (Exception e) {
+            throw new EntityServiceException(e);
+        }
+    }
+
     private void register(String name, String login, String password) {
         if (name.isBlank()) {
             throw new EntityServiceException("Имя пользователя не может состоять только из пробельных символов");
@@ -38,13 +47,15 @@ public class CredentialsService extends AbstractEntityService<Credentials, Crede
             throw new EntityServiceException(String.format("Выбранный логин уже используется: %s", login));
         }
 
-        Profile profile = new Profile(name);
-        profileService.save(profile);
-
         long passwordHash = Credentials.calculatePasswordHash(password);
+        Credentials credentials = new Credentials(login, passwordHash);
 
-        Credentials credentials = new Credentials(profile, login, passwordHash);
+        Profile profile = new Profile(name, credentials);
+
+        credentials.setProfile(profile);
         save(credentials);
+
+        profileService.save(profile);
     }
 
     private Optional<Profile> authenticate(String login, String password) {
@@ -55,13 +66,14 @@ public class CredentialsService extends AbstractEntityService<Credentials, Crede
 
             return credentials.map(Credentials::getProfile);
         } catch (Exception e) {
-            throw new EntityServiceException();
+            throw new EntityServiceException(e);
         }
     }
 
     public void signIn(String login, String password) {
-        authenticate(login, password).ifPresent(
-                profileService::select
+        authenticate(login, password).ifPresentOrElse(
+                profileService::select,
+                () -> { throw new EntityServiceException("Некорректные логин/пароль"); }
         );
     }
 
