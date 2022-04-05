@@ -1,18 +1,15 @@
 package dashakys.korob.ok.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
 @EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
 @Entity
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class ShopGame extends DatabaseEntity {
     @OneToOne(mappedBy = "shopGame")
@@ -21,4 +18,13 @@ public class ShopGame extends DatabaseEntity {
     private int price;
     @Column
     private int count;
+
+    @Override
+    public String toString() {
+        return "ShopGame{" +
+                "game=" + game.getName() +
+                ", price=" + price +
+                ", count=" + count +
+                '}';
+    }
 }

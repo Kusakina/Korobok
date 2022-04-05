@@ -29,4 +29,8 @@ public class Game extends DatabaseEntity {
 
     @OneToOne(cascade = CascadeType.ALL)
     private ShopGame shopGame;
+
+    public Game(String name) {
+        this.name = name;
+    }
 }
