@@ -1,9 +1,6 @@
 package dashakys.korob.ok.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +10,7 @@ import javax.persistence.OneToOne;
 @ToString(callSuper = true)
 @Entity
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class ShopGame extends DatabaseEntity {
     @OneToOne(mappedBy = "shopGame")
