@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -13,10 +14,10 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Purchase extends DatabaseEntity {
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne
     private Profile client;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne
     private Profile manager;
 
     @Column
@@ -25,4 +26,10 @@ public class Purchase extends DatabaseEntity {
 
     @Column
     private int cost;
+
+    public Purchase(Profile client, Profile manager, Status status) {
+        this.client = client;
+        this.manager = manager;
+        this.status = status;
+    }
 }

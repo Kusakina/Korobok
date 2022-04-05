@@ -14,7 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class ProfileRole extends DatabaseEntity{
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne
     private Profile profile;
 
     @Column

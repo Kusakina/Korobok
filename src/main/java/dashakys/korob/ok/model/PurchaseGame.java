@@ -1,28 +1,29 @@
 package dashakys.korob.ok.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Entity
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class PurchaseGame extends DatabaseEntity{
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne
     private Purchase purchase;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne
     private ShopGame shopGame;
 
     @Column
     private int count;
+
+    public int getCost() {
+        return shopGame.getPrice() * count;
+    }
 }
