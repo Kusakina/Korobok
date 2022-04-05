@@ -1,9 +1,9 @@
 package dashakys.korob.ok;
 
+import java.util.List;
 import java.util.Scanner;
 
-import dashakys.korob.ok.model.Credentials;
-import dashakys.korob.ok.model.DatabaseEntity;
+import dashakys.korob.ok.model.*;
 import dashakys.korob.ok.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -21,11 +21,20 @@ public class Application implements CommandLineRunner {
 	private final ProfileService profileService;
 	private final CredentialsService credentialsService;
 
+	private final GameService gameService;
+	private final ShopGameService shopGameService;
+	private final PurchaseGameService purchaseGameService;
+	private final PurchaseService purchaseService;
+
 	@Override
 	public void run(String... args) {
 		System.out.println("Hello world!");
 
-		testProfile();
+		try (Scanner in = new Scanner(System.in)) {
+			testProfile(in);
+
+			testGames(in);
+		}
 	}
 
 	<T extends DatabaseEntity> void printEntities(String caseName, String entitiesName, EntityService<T> service) {
@@ -41,21 +50,23 @@ public class Application implements CommandLineRunner {
 		printEntities(caseName, "реквизитов для входа", credentialsService);
 	}
 
-	void testProfile() {
+	void testProfile(Scanner in) {
 		printProfiles("В начале");
 
-		try (Scanner in = new Scanner(System.in)) {
-			testSignUp(in);
+		testSignUp(in);
 
-			testSignIn(in);
+		testSignIn(in);
 
-			testRemove(in);
-		}
+		testRemove(in);
 	}
 
 	String readString(String name, Scanner in) {
 		System.out.printf("Введите %s: ", name);
 		return in.nextLine();
+	}
+
+	int readInt(String name, Scanner in) {
+		return Integer.parseInt(readString(name, in));
 	}
 
 	void testSignUp(Scanner in) {
@@ -99,7 +110,7 @@ public class Application implements CommandLineRunner {
 
 	void testRemove(Scanner in) {
 		int iterations = 2;
-		System.out.printf("Делаем %d попыток удаления\n", iterations);
+		System.out.printf("Делаем %d попыток удаления профиля\n", iterations);
 
 		for (int it = 0; it < iterations; ++it) {
 			String login = readString("логин", in);
@@ -117,6 +128,103 @@ public class Application implements CommandLineRunner {
 			}
 
 			printProfiles("После удаления");
+		}
+	}
+
+	void printGames(String caseName) {
+		printEntities(caseName, "игр", gameService);
+		printEntities(caseName, "игр в магазине", shopGameService);
+	}
+
+	void printPurchases(String caseName) {
+		printEntities(caseName, "заказов", purchaseService);
+		printEntities(caseName, "артикулов в заказах", purchaseGameService);
+	}
+
+	void testGames(Scanner in) {
+		printGames("В начале");
+		testAddGame(in);
+
+		printPurchases("В начале");
+		testAddPurchase(in);
+		testPurchasedByProfile(in);
+	}
+
+	void testAddGame(Scanner in) {
+		int iterations = 3;
+		System.out.printf("Делаем %d попыток добавления игры\n", iterations);
+
+		for (int it = 0; it < iterations; ++it) {
+			try {
+				String name = readString("название", in);
+				var game = gameService.addGame(name);
+
+				System.out.printf("Добавляем игру %s в магазин\n", game.getName());
+				int price = readInt("цену", in);
+				int count = readInt("кол-во", in);
+
+				shopGameService.addShopGame(game, price, count);
+			} catch (EntityServiceException e) {
+				System.out.println(e.getMessage());
+			}
+
+			printGames("После добавления");
+		}
+	}
+
+	Profile readProfile(String caseName, Scanner in) {
+		String login = readString(String.format("логин %s", caseName), in);
+
+		return credentialsService.findByLogin(login).map(Credentials::getProfile).orElseThrow(
+				() -> new EntityServiceException(String.format("Пользователь с логином %s не найден", login))
+		);
+	}
+
+	void testAddPurchase(Scanner in) {
+		int iterations = 3;
+		System.out.printf("Делаем %d попыток заказать игры\n", iterations);
+
+		for (int it = 0; it < iterations; ++it) {
+			try {
+				var client = readProfile("покупателя", in);
+				var manager = readProfile("продавца", in);
+
+				Purchase purchase = new Purchase(client, manager, Status.OPEN);
+				purchaseService.save(purchase);
+
+				for (ShopGame shopGame : shopGameService.findAll()) {
+					Game game = shopGame.getGame();
+					int count = readInt(String.format("штук игры %s", game.getName()), in);
+					purchaseGameService.addPurchaseGame(purchase, shopGame, count);
+				}
+
+				int cost = purchaseGameService.findAllByPurchase(purchase).stream()
+						.mapToInt(PurchaseGame::getCost)
+						.sum();
+
+				purchase.setCost(cost);
+				purchaseService.save(purchase);
+			} catch (EntityServiceException e) {
+				System.out.println(e.getMessage());
+			}
+
+			printPurchases("После покупки");
+		}
+	}
+
+	void testPurchasedByProfile(Scanner in) {
+		for (Profile profile : profileService.findAll()) {
+			System.out.printf("Игры, заказанные пользователем %s\n", profile.getName());
+
+			try {
+				List<Game> games = gameService.findAllPurchasedByProfile(profile);
+				System.out.printf("%d игр\n", games.size());
+				for (Game game : games) {
+					System.out.println(game.getName());
+				}
+			} catch (EntityServiceException e) {
+				System.out.println(e.getMessage());
+			}
 		}
 	}
 }
