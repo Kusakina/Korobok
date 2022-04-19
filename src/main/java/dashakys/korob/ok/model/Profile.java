@@ -3,7 +3,7 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = { "credentials" })
 @ToString(callSuper = true, exclude = { "credentials" })
 @Entity
 @Data
