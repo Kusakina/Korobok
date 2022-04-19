@@ -9,13 +9,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 @RequiredArgsConstructor
-public class Application implements CommandLineRunner {
+public class Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args).close();
+		SpringApplication.run(Application.class, args);
 	}
 
 	private final ProfileService profileService;
@@ -26,15 +27,17 @@ public class Application implements CommandLineRunner {
 	private final PurchaseGameService purchaseGameService;
 	private final PurchaseService purchaseService;
 
-	@Override
-	public void run(String... args) {
-		System.out.println("Hello world!");
+	@Bean
+	public CommandLineRunner loadData() {
+		return (args) -> {
+			System.out.println("Hello world!");
 
-		try (Scanner in = new Scanner(System.in)) {
-			testProfile(in);
+			try (Scanner in = new Scanner(System.in)) {
+				testProfile(in);
 
-			testGames(in);
-		}
+				testGames(in);
+			}
+		};
 	}
 
 	<T extends DatabaseEntity> void printEntities(String caseName, String entitiesName, EntityService<T> service) {
