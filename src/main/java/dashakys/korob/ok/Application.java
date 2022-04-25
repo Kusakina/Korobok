@@ -32,11 +32,11 @@ public class Application {
 		return (args) -> {
 			System.out.println("Hello world!");
 
-			try (Scanner in = new Scanner(System.in)) {
+			/*try (Scanner in = new Scanner(System.in)) {
 				testProfile(in);
 
 				testGames(in);
-			}
+			}*/
 		};
 	}
 
