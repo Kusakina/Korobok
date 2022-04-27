@@ -14,7 +14,6 @@ import dashakys.korob.ok.service.EntityServiceException;
 
 @Route(value = "login")
 @PageTitle("login")
-//@CssImport()
 
 public class LoginView extends Div {
     public LoginView(CredentialsService credentialsService){

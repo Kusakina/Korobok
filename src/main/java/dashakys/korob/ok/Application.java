@@ -3,6 +3,8 @@ package dashakys.korob.ok;
 import java.util.List;
 import java.util.Scanner;
 
+import com.vaadin.flow.component.page.AppShellConfigurator;
+import com.vaadin.flow.theme.Theme;
 import dashakys.korob.ok.model.*;
 import dashakys.korob.ok.service.*;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +15,8 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 @RequiredArgsConstructor
-public class Application {
+@Theme("my-app")
+public class Application implements AppShellConfigurator {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
