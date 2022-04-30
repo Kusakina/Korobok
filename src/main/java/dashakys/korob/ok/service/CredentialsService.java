@@ -6,6 +6,8 @@ import javax.transaction.Transactional;
 
 import dashakys.korob.ok.model.Credentials;
 import dashakys.korob.ok.model.Profile;
+import dashakys.korob.ok.model.ProfileRole;
+import dashakys.korob.ok.model.Role;
 import dashakys.korob.ok.repository.CredentialsRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +16,13 @@ import org.springframework.stereotype.Service;
 public class CredentialsService extends AbstractEntityService<Credentials, CredentialsRepository> {
 
     private final ProfileService profileService;
+    private final ProfileRoleService profileRoleService;
 
     public CredentialsService(CredentialsRepository repository,
-                              ProfileService profileService) {
+                              ProfileService profileService, ProfileRoleService profileRoleService) {
         super(repository);
         this.profileService = profileService;
+        this.profileRoleService = profileRoleService;
     }
 
 
@@ -56,6 +60,8 @@ public class CredentialsService extends AbstractEntityService<Credentials, Crede
         save(credentials);
 
         profileService.save(profile);
+        ProfileRole profileRole = new ProfileRole(profile, Role.USER);
+        profileRoleService.save(profileRole);
     }
 
     private Optional<Profile> authenticate(String login, String password) {

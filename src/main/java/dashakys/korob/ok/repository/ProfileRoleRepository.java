@@ -12,4 +12,6 @@ public interface ProfileRoleRepository extends EntityRepository<ProfileRole> {
     List<ProfileRole> findAllByRole(Role role);
     List<ProfileRole> findAllByProfile(Profile profile);
     Optional<ProfileRole> findByProfileAndRole(Profile profile, Role role);
+    Optional<ProfileRole> findByProfile(Profile profile);
+    //Optional<ProfileRole> findByLogin(String login);
 }
