@@ -22,7 +22,7 @@ public class RegisterView extends Composite {
     }
     @Override
     protected Component initContent() {
-        var username = new TextField("Имя пльзователя");
+        var username = new TextField("Имя пользователя");
         var login = new TextField("Логин");
         var password = new TextField("Пароль");
 

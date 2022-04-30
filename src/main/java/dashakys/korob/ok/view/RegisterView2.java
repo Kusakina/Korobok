@@ -21,7 +21,7 @@ public class RegisterView2 extends UI {
         this.credentialsService = credentialsService;
     }
     protected Component initContent() {
-        var username = new TextField("Имя пльзователя");
+        var username = new TextField("Имя пользователя");
         var login = new TextField("Логин");
         var password = new TextField("Пароль");
 
