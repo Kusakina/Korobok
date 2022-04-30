@@ -39,7 +39,15 @@ public class ProfileService extends AbstractEntityService<Profile, ProfileReposi
 
     public Optional<Profile> findByLogin(String login) {
         try {
-           return findByCredentials((credentialsService.findByLogin(login)).get());
+            // map: Optional<A>, F(A) -> B;
+            // Optional<A>.map(F) = [A -> F(A) = B] -> Optional<B>
+//            return credentialsService.findByLogin(login)
+//                  .map(this::findByCredentials);
+
+            // flatMap: Optional<A>, F(A) -> Optional<B>;
+            // Optional<A>.flatMap(B) = [A -> F(A) = Opt<B>] = Opt<B>
+            return credentialsService.findByLogin(login)
+                    .flatMap(this::findByCredentials);
         } catch (Exception e) {
             throw new EntityServiceException(e);
         }
