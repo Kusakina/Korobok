@@ -35,12 +35,25 @@ public class Application implements AppShellConfigurator {
 		return (args) -> {
 			System.out.println("Hello world!");
 
+			setAdmin();
+
 			/*try (Scanner in = new Scanner(System.in)) {
 				testProfile(in);
 
 				testGames(in);
 			}*/
 		};
+	}
+
+	private void setAdmin() {
+		boolean noAdmin = profileService.findAllByRole(Role.ADMIN).isEmpty();
+
+		if (noAdmin) {
+			String name = "admin";
+			String login = "admin";
+			String password = "admin";
+			credentialsService.register(name, login, password, Role.ADMIN);
+		}
 	}
 
 	<T extends DatabaseEntity> void printEntities(String caseName, String entitiesName, EntityService<T> service) {
