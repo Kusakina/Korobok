@@ -1,30 +1,25 @@
 package dashakys.korob.ok.service;
 
-import java.util.Optional;
-
-import javax.transaction.Transactional;
-
 import dashakys.korob.ok.model.Credentials;
 import dashakys.korob.ok.model.Profile;
-import dashakys.korob.ok.model.ProfileRole;
 import dashakys.korob.ok.model.Role;
 import dashakys.korob.ok.repository.CredentialsRepository;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Transactional
 @Service
 public class CredentialsService extends AbstractEntityService<Credentials, CredentialsRepository> {
 
     private final ProfileService profileService;
-    private final ProfileRoleService profileRoleService;
 
     public CredentialsService(CredentialsRepository repository,
-                              ProfileService profileService, ProfileRoleService profileRoleService) {
+                              ProfileService profileService) {
         super(repository);
         this.profileService = profileService;
-        this.profileRoleService = profileRoleService;
     }
-
 
     public Optional<Credentials> findByLogin(String login) {
         try {
@@ -34,7 +29,7 @@ public class CredentialsService extends AbstractEntityService<Credentials, Crede
         }
     }
 
-    private void register(String name, String login, String password) {
+    public void register(String name, String login, String password, Role role) {
         if (name.isBlank()) {
             throw new EntityServiceException("Имя пользователя не может состоять только из пробельных символов");
         }
@@ -54,14 +49,12 @@ public class CredentialsService extends AbstractEntityService<Credentials, Crede
         long passwordHash = Credentials.calculatePasswordHash(password);
         Credentials credentials = new Credentials(login, passwordHash);
 
-        Profile profile = new Profile(name, credentials);
+        Profile profile = new Profile(name, role, credentials);
 
         credentials.setProfile(profile);
         save(credentials);
 
         profileService.save(profile);
-        ProfileRole profileRole = new ProfileRole(profile, Role.USER);
-        profileRoleService.save(profileRole);
     }
 
     private Optional<Profile> authenticate(String login, String password) {
@@ -84,7 +77,7 @@ public class CredentialsService extends AbstractEntityService<Credentials, Crede
     }
 
     public void signUp(String name, String login, String password) {
-        register(name, login, password);
+        register(name, login, password, Role.USER);
         signIn(login, password);
     }
 }
