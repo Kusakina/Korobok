@@ -37,11 +37,13 @@ public class Application implements AppShellConfigurator {
 
 			setAdmin();
 
-			/*try (Scanner in = new Scanner(System.in)) {
+			/*
+			try (Scanner in = new Scanner(System.in)) {
 				testProfile(in);
 
 				testGames(in);
-			}*/
+			}
+			*/
 		};
 	}
 

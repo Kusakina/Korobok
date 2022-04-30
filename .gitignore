@@ -34,5 +34,5 @@ build/
 .vscode/
 
 ### Manual ###
-/frontend/generated
-/data
+frontend/generated
+data
