@@ -46,11 +46,13 @@ public class Application implements AppShellConfigurator {
 	}
 
 	private void setAdmin() {
-		boolean noAdmin = profileService.findAllByRole(Role.ADMIN).isEmpty();
+		String login = "admin";
+
+//		boolean noAdmin = profileService.findAllByRole(Role.ADMIN).isEmpty();
+		boolean noAdmin = profileService.findByLogin(login).isEmpty();
 
 		if (noAdmin) {
 			String name = "admin";
-			String login = "admin";
 			String password = "admin";
 			credentialsService.register(name, login, password, Role.ADMIN);
 		}

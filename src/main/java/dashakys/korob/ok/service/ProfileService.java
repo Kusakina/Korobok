@@ -15,13 +15,10 @@ import java.util.Optional;
 @Service
 public class ProfileService extends AbstractEntityService<Profile, ProfileRepository> {
 
-    private final CredentialsService credentialsService;
     private Profile selectedProfile;
 
-    public ProfileService(ProfileRepository repository,
-                          CredentialsService credentialsService) {
+    public ProfileService(ProfileRepository repository) {
         super(repository);
-        this.credentialsService = credentialsService;
     }
 
     public void select(Profile profile) { this.selectedProfile = profile; }
@@ -46,8 +43,10 @@ public class ProfileService extends AbstractEntityService<Profile, ProfileReposi
 
             // flatMap: Optional<A>, F(A) -> Optional<B>;
             // Optional<A>.flatMap(B) = [A -> F(A) = Opt<B>] = Opt<B>
-            return credentialsService.findByLogin(login)
-                    .flatMap(this::findByCredentials);
+//            return credentialsService.findByLogin(login)
+//                    .flatMap(this::findByCredentials);
+
+            return repository.findByLogin(login);
         } catch (Exception e) {
             throw new EntityServiceException(e);
         }
