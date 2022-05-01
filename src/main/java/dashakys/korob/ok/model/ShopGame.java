@@ -27,4 +27,8 @@ public class ShopGame extends DatabaseEntity {
                 ", count=" + count +
                 '}';
     }
+
+    public String getGameName() {
+        return getGame().getName();
+    }
 }

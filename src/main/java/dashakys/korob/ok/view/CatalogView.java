@@ -18,7 +18,7 @@ public class CatalogView extends VerticalLayout {
         this.shopGameGrid = new Grid<>(ShopGame.class, false);
 
 
-        shopGameGrid.addColumn(ShopGame::getGame).setHeader("Игра");
+        shopGameGrid.addColumn(ShopGame::getGameName).setHeader("Игра");
         shopGameGrid.addColumn(ShopGame::getPrice).setHeader("Цена");
         shopGameGrid.addColumn(ShopGame::getCount).setHeader("Количество");
         //shopGameGrid.addComponentColumn(new Button(VaadinIcon.PLUS.create(), event -> method()));
