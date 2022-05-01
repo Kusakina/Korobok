@@ -30,7 +30,7 @@ public class LoginView extends Div {
                 new Button("Закоробиться", event -> {
                     try{
                         credentialsService.signIn(login.getValue(), password.getValue());
-                        UI.getCurrent().navigate("home");
+                        UI.getCurrent().navigate("userHome");
                     }
                     catch (EntityServiceException e){
                         Notification.show("Неверный логин/пароль");
