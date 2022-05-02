@@ -7,6 +7,8 @@ import dashakys.korob.ok.model.ShopGame;
 import dashakys.korob.ok.repository.ShopGameRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Transactional
 @Service
 public class ShopGameService extends AbstractEntityService<ShopGame, ShopGameRepository> {
@@ -32,5 +34,16 @@ public class ShopGameService extends AbstractEntityService<ShopGame, ShopGameRep
 
         save(shopGame);
         gameService.save(game);
+    }
+    public List<ShopGame> findAllByGame(String name){
+        if (name == null|| name.isEmpty()) {
+            return findAll();
+        } else{
+           try {
+               return repository.search(name);
+           } catch (Exception e) {
+                throw new EntityServiceException(e);
+            }
+        }
     }
 }
