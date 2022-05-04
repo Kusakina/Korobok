@@ -13,11 +13,10 @@ import org.springframework.stereotype.Repository;
 public interface ShopGameRepository extends EntityRepository<ShopGame> {
 
     Optional<ShopGame> findByGame(Game game);
-    @Query("SELECT * FROM ShopGame sg " +
-            "JOIN Game g on sg.game = g" +
-            "WHERE LOWER(g.Name) like LOWER(concat('%', :searchTerm, '%'))"
-    )
 
+    @Query("SELECT sg FROM ShopGame sg " +
+            "JOIN Game g on sg.game = g " +
+            "WHERE LOWER(g.name) like LOWER(concat('%', :searchTerm, '%'))"
+    )
     List<ShopGame> search(@Param("searchTerm") String searchTerm);
-    List<ShopGame> findAll();
 }
