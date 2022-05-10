@@ -2,11 +2,13 @@ package dashakys.korob.ok.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
 import dashakys.korob.ok.model.Game;
 import dashakys.korob.ok.model.Profile;
+import dashakys.korob.ok.model.ShopGame;
 import dashakys.korob.ok.repository.GameRepository;
 import org.springframework.stereotype.Service;
 
@@ -57,5 +59,15 @@ public class GameService extends AbstractEntityService<Game, GameRepository> {
         } catch (Exception e) {
             throw new EntityServiceException(e);
         }
+    }
+    public List<String> getCategory(){
+       return repository.searchCategory();
+    }
+    public  Set<Game> findByFilter(Set<String> selectedItems){
+            try {
+                return repository.findByCategoryIn(selectedItems);
+            } catch (Exception e) {
+                throw new EntityServiceException(e);
+            }
     }
 }

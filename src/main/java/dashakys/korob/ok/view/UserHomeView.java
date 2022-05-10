@@ -19,10 +19,7 @@ import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import dashakys.korob.ok.service.CredentialsService;
-import dashakys.korob.ok.service.EntityServiceException;
-import dashakys.korob.ok.service.ProfileService;
-import dashakys.korob.ok.service.ShopGameService;
+import dashakys.korob.ok.service.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +28,7 @@ import java.util.Map;
 @PageTitle("userHome")
 
 public class UserHomeView extends Div {
-    UserHomeView(ShopGameService shopGameService, ProfileService profileService, CredentialsService credentialsService) {
+    UserHomeView(ShopGameService shopGameService, GameService gameService, ProfileService profileService, CredentialsService credentialsService) {
         Tab catalogue = new Tab(
                 VaadinIcon.TAGS.create(),
                 new Span("Каталог")
@@ -65,20 +62,27 @@ public class UserHomeView extends Div {
         Map<Tab, Integer> tabsInt = new HashMap<>();
         tabsInt.put(catalogue, 1 );
         tabsInt.put(cart, 2);
+        //tabsInt.put(profile,3);
+        tabsInt.put(logout,4);
 
         Map<Tab, Component> ViewMap = new HashMap<>();
-        ViewMap.put(catalogue, new CatalogView(shopGameService));
+        ViewMap.put(catalogue, new CatalogView(shopGameService,gameService));
         ViewMap.put(cart, new RegisterView(credentialsService));
         Component a = (Component) ViewMap.get(catalogue);
         Component b = (Component) ViewMap.get(cart);
+        //Component d = (Component) ViewMap.get(logout);
         a.setVisible(true);
         b.setVisible(false);
+        //d.setVisible(false);
         add(tabs,a,b);
 
 
         //tabsMap.put(profile, RegisterView.class);
         final int[] last = {1};
         tabs.addSelectedChangeListener(event -> {
+            if (event.getSelectedTab()== logout){
+               UI.getCurrent().navigate("login2");
+            }
             this.getComponentAt(last[0]).setVisible(false);
             this.getComponentAt(tabsInt.get(event.getSelectedTab())).setVisible(true);
             var left = tabsInt.get(event.getSelectedTab());

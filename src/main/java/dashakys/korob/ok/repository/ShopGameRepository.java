@@ -2,6 +2,7 @@ package dashakys.korob.ok.repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import dashakys.korob.ok.model.Game;
 import dashakys.korob.ok.model.ShopGame;
@@ -19,4 +20,13 @@ public interface ShopGameRepository extends EntityRepository<ShopGame> {
             "WHERE LOWER(g.name) like LOWER(concat('%', :searchTerm, '%'))"
     )
     List<ShopGame> search(@Param("searchTerm") String searchTerm);
+
+
+   /* @Query("SELECT sg FROM ShopGame sg " +
+            "JOIN Game g on sg.game = g " +
+            "WHERE g.category IN :value)"
+    )*/
+
+    //List<ShopGame> searchByFilter (@Param("value") String value);
+    List<ShopGame> findByGameIn(Set<Game>selectedItems);
 }

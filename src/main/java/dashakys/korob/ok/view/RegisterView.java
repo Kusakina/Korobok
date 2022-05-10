@@ -2,6 +2,7 @@ package dashakys.korob.ok.view;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Composite;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.Notification;
@@ -34,9 +35,11 @@ public class RegisterView extends Composite {
                 new Button("Стать коробчаниным", event -> {
                     try {
                         credentialsService.signUp(username.getValue(), login.getValue(), password.getValue());
+                        UI.getCurrent().navigate("userHome");
                     } catch (EntityServiceException e) {
                         Notification.show(e.getMessage());
                     }
+
                 })
         );
         layout.setAlignItems(FlexComponent.Alignment.CENTER);

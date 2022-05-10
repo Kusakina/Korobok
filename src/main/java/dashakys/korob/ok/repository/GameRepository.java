@@ -2,9 +2,11 @@ package dashakys.korob.ok.repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import dashakys.korob.ok.model.Game;
 import dashakys.korob.ok.model.Profile;
+import dashakys.korob.ok.model.ShopGame;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -22,4 +24,9 @@ public interface GameRepository extends EntityRepository<Game>  {
             "WHERE p.client = :profile"
     )
     List<Game> findAllPurchasedByProfile(@Param("profile") Profile profile);
+
+    @Query("SELECT DISTINCT sg.category FROM Game sg ")
+    List<String> searchCategory ();
+
+    Set<Game> findByCategoryIn(Set<String> categories);
 }

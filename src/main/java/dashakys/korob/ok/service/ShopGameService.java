@@ -7,7 +7,9 @@ import dashakys.korob.ok.model.ShopGame;
 import dashakys.korob.ok.repository.ShopGameRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 @Transactional
 @Service
@@ -42,6 +44,24 @@ public class ShopGameService extends AbstractEntityService<ShopGame, ShopGameRep
            try {
                return repository.search(name);
            } catch (Exception e) {
+                throw new EntityServiceException(e);
+            }
+        }
+    }
+    public List<ShopGame> findByFilter(Set<Game>selectedItems){
+        if (selectedItems.isEmpty()) {
+            return findAll();
+        } else{
+            try {
+                /*String value = "";
+                Iterator<String> iter = selectedItems.iterator();
+                while (iter.hasNext()){
+                    value+="'";
+                    value+=iter.next();
+                    value+="', ";
+                }*/
+                return repository.findByGameIn(selectedItems);
+            } catch (Exception e) {
                 throw new EntityServiceException(e);
             }
         }
