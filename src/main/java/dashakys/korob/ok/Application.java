@@ -1,6 +1,7 @@
 package dashakys.korob.ok;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 import com.vaadin.flow.component.page.AppShellConfigurator;
@@ -35,7 +36,10 @@ public class Application implements AppShellConfigurator {
 		return (args) -> {
 			System.out.println("Hello world!");
 
+
+
 			setAdmin();
+			//addGame();
 
 			/*
 			try (Scanner in = new Scanner(System.in)) {
@@ -59,6 +63,39 @@ public class Application implements AppShellConfigurator {
 			credentialsService.register(name, login, password, Role.ADMIN);
 		}
 	}
+
+
+	private void addGame(){
+
+			var game2 = gameService.addGame("Шашки");
+			int price2 = 700;
+			int count2 = 3;
+
+			shopGameService.addShopGame(game2, price2, count2);
+
+
+
+
+
+	/*	for (int j =0;j<shopGameService.findAll().size();++j ){
+			shopGameService.remove(shopGameService.findAll().get(j));
+		}
+		for (int j =0;j<gameService.findAll().size();++j ){
+			gameService.remove(gameService.findAll().get(j));
+		}*/
+		//gameService.remove(gameService.findAll().);
+		//Game a = gameService.findByName("Уно").get();
+		//gameService.remove(a);
+		//boolean noGame = shopGameService.findAll().isEmpty();
+		//var game2 = gameService.addGame("Уно");
+		//if(noGame) {
+			//var game4 = gameService.addGame("Монополия");
+			//shopGameService.addShopGame(game4, 2500, 2);
+
+		//}
+	}
+
+
 
 	<T extends DatabaseEntity> void printEntities(String caseName, String entitiesName, EntityService<T> service) {
 		var allEntities = service.findAll();

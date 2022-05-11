@@ -30,13 +30,14 @@ public class GameService extends AbstractEntityService<Game, GameRepository> {
         return selectedGame;
     }
 
-    private Optional<Game> findByName(String name) {
+    public Optional<Game> findByName(String name) {
         try {
             return repository.findByName(name);
         } catch (Exception e) {
             throw new EntityServiceException(e);
         }
     }
+
 
     public Game addGame(String name) {
         if (name.isBlank()) {

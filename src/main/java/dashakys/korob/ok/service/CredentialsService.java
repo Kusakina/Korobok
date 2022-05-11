@@ -28,6 +28,24 @@ public class CredentialsService extends AbstractEntityService<Credentials, Crede
             throw new EntityServiceException(e);
         }
     }
+    public void setProfile(String name, String login, String password, Profile profile){
+        if (name.isBlank()) {
+            throw new EntityServiceException("Имя пользователя не может состоять только из пробельных символов");
+        }
+        if (login.isBlank()) {
+            throw new EntityServiceException("Логин не может состоять только из пробельных символов");
+        }
+
+        if (password.isBlank()) {
+            throw new EntityServiceException("Пароль не может состоять только из пробельных символов");
+        }
+        if (repository.findByLogin(login).isPresent() && (login!= profile.getCredentials().getLogin()) ) {
+            throw new EntityServiceException(String.format("Выбранный логин уже используется: %s", login));
+        }
+        profile.setCredentials(new Credentials(login,password.hashCode()));
+        profile.setName(name);
+        profileService.save(profile);
+    }
 
     public void register(String name, String login, String password, Role role) {
         if (name.isBlank()) {
