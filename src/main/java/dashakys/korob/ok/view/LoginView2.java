@@ -16,15 +16,18 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import dashakys.korob.ok.service.CredentialsService;
 import dashakys.korob.ok.service.EntityServiceException;
+import dashakys.korob.ok.service.SelectedProfileService;
 
 @Route(value = "login2")
 @PageTitle("login2")
 
 public class LoginView2 extends Composite {
-    CredentialsService credentialsService;
-    public LoginView2 (CredentialsService credentialsService){
-        this.credentialsService = credentialsService;
+    private final SelectedProfileService selectedProfileService;
+
+    public LoginView2(SelectedProfileService selectedProfileService) {
+        this.selectedProfileService = selectedProfileService;
     }
+
     @Override
     protected Component initContent() {
 
@@ -37,7 +40,7 @@ public class LoginView2 extends Composite {
                 password,
                 new Button("Закоробиться", event -> {
                     try {
-                        credentialsService.signIn(login.getValue(), password.getValue());
+                        selectedProfileService.signIn(login.getValue(), password.getValue());
                         UI.getCurrent().navigate("userHome");
                     } catch (EntityServiceException e) {
                         Notification.show("Неверный логин/пароль");

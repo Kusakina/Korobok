@@ -13,6 +13,7 @@ import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.Theme;
 import dashakys.korob.ok.service.CredentialsService;
 import dashakys.korob.ok.service.EntityServiceException;
+import dashakys.korob.ok.service.SelectedProfileService;
 
 @Route(value = "login")
 @PageTitle("login")
@@ -20,7 +21,7 @@ import dashakys.korob.ok.service.EntityServiceException;
 //@CssImport()
 
 public class LoginView extends Div {
-    public LoginView(CredentialsService credentialsService){
+    public LoginView(SelectedProfileService selectedProfileService){
         setId("login-view");
         var login = new TextField("Login");
         var password = new PasswordField("Password");
@@ -30,7 +31,7 @@ public class LoginView extends Div {
                 password,
                 new Button("Закоробиться", event -> {
                     try{
-                        credentialsService.signIn(login.getValue(), password.getValue());
+                        selectedProfileService.signIn(login.getValue(), password.getValue());
                         UI.getCurrent().navigate("userHome");
                     }
                     catch (EntityServiceException e){

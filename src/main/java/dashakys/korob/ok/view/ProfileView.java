@@ -3,8 +3,6 @@ package dashakys.korob.ok.view;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.checkbox.CheckboxGroup;
-import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
@@ -14,36 +12,26 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.Autocomplete;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import dashakys.korob.ok.model.Profile;
 import dashakys.korob.ok.model.Purchase;
-import dashakys.korob.ok.model.ShopGame;
 import dashakys.korob.ok.service.*;
-
-import javax.swing.*;
-import java.util.List;
 /*@Route(value = "profile")
 @PageTitle("profile")*/
 
 public class ProfileView extends Div {
     final Grid<Purchase> purchaseGrid;
-    //private final ShopGameService shopGameService;
-    //private final GameService gameService;
-    private final CredentialsService credentialsService;
-    private final ProfileService profileService;
-    private final PurchaseService purchaseService;
     private final SelectedProfileService selectedProfileService;
+    private final SelectedPurchaseService selectedPurchaseService;
+    private final PurchaseService purchaseService;
 
-    ProfileView(ProfileService profileService, PurchaseService purchaseService, CredentialsService credentialsService, SelectedProfileService selectedProfileService) {
+    ProfileView(SelectedProfileService selectedProfileService,
+                SelectedPurchaseService selectedPurchaseService,
+                PurchaseService purchaseService) {
         this.selectedProfileService = selectedProfileService;
-        this.profileService = profileService;
+        this.selectedPurchaseService = selectedPurchaseService;
         this.purchaseService = purchaseService;
-        this.credentialsService = credentialsService;
 
         Button profileSettings = new Button("Изменить учето4ку");
         Dialog dialog = new Dialog();
@@ -100,39 +88,45 @@ public class ProfileView extends Div {
     }
 
     private void createView(Purchase purchase){
-        purchaseService.select(purchase);
+        selectedPurchaseService.select(purchase);
         UI.getCurrent().navigate("purchase");
     }
 
     private void listPurchase() {
-        purchaseGrid.setItems(purchaseService.findAllByClient(selectedProfileService.getSelectedProfile()));
+        var profile = selectedProfileService.getSelectedProfile();
+        purchaseGrid.setItems(purchaseService.findAllByClient(profile));
     }
-    private VerticalLayout createDialogLayout(Dialog dialog) {
 
-        TextField name = new TextField();
-        name.setValue(profileService.getSelectedProfile().getName());
-        TextField login = new TextField(profileService.getSelectedProfile().getCredentials().getLogin());
-        login.setValue(profileService.getSelectedProfile().getCredentials().getLogin());
-        PasswordField password = new PasswordField();
+    private VerticalLayout createDialogLayout(Dialog dialog) {
+        var selectedProfile = selectedProfileService.getSelectedProfile();
+
+        TextField name = new TextField("Имя");
+        name.setValue(selectedProfile.getName());
+        TextField login = new TextField("Логин");
+        login.setValue(selectedProfile.getCredentials().getLogin());
+
+        PasswordField password = new PasswordField("Пароль");
 
         var setButton = new Button("Коробить");
         setButton.addClickListener( event -> {
             try {
-                credentialsService.setProfile(name.getValue(), login.getValue(), password.getValue(), profileService.getSelectedProfile());
-                //profileService.setName(name.getValue());
-                credentialsService.signIn(login.getValue(), password.getValue());
+                selectedProfileService.update(
+                        name.getValue(),
+                        login.getValue(),
+                        password.getValue()
+                );
+//                selectedProfileService.signIn(login.getValue(), password.getValue());
                 dialog.close();
                 Notification.show("Изменения сохранены");
-
             } catch (EntityServiceException e) {
                 Notification.show(e.getMessage());
             }
         });
+
         setButton.setWidth("50.0%");
 
-
         VerticalLayout profileThings = new VerticalLayout(
-                new H2("Смени себя полность, " + profileService.getSelectedProfile().getName()),
+                new H2("Смени себя полностью, " + selectedProfile.getName()),
                 name,
                 login,
                 password,

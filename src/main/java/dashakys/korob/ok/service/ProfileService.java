@@ -14,7 +14,6 @@ import java.util.Optional;
 
 @Transactional
 @Service
-@SessionScope
 public class ProfileService extends AbstractEntityService<Profile, ProfileRepository> {
 
 

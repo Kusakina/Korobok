@@ -26,6 +26,10 @@ public class Purchase extends DatabaseEntity {
     @Column
     private int cost;
 
+    public Purchase(Profile client) {
+        this(client, null);
+    }
+
     public Purchase(Profile client, Profile manager) {
         this.client = client;
         this.manager = manager;

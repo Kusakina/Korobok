@@ -8,20 +8,17 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Transactional
 @Service
 public class CredentialsService extends AbstractEntityService<Credentials, CredentialsRepository> {
 
     private final ProfileService profileService;
-    //private final SelectedProfileService selectedProfileService;
 
     public CredentialsService(CredentialsRepository repository,
-                              ProfileService profileService, SelectedProfileService selectedProfileService) {
+                              ProfileService profileService) {
         super(repository);
         this.profileService = profileService;
-        //this.selectedProfileService = selectedProfileService;
     }
 
     public Optional<Credentials> findByLogin(String login) {
@@ -31,7 +28,18 @@ public class CredentialsService extends AbstractEntityService<Credentials, Crede
             throw new EntityServiceException(e);
         }
     }
-    public void setProfile(String name, String login, String password, Profile profile){
+
+    public Optional<Credentials> findByLoginAndPasswordHash(String login, long passwordHash) {
+        try {
+            return repository.findByLoginAndPasswordHash(
+                    login, passwordHash
+            );
+        } catch (Exception e) {
+            throw new EntityServiceException(e);
+        }
+    }
+
+    public static void checkFields(String name, String login, String password) {
         if (name.isBlank()) {
             throw new EntityServiceException("Имя пользователя не может состоять только из пробельных символов");
         }
@@ -42,45 +50,41 @@ public class CredentialsService extends AbstractEntityService<Credentials, Crede
         if (password.isBlank()) {
             throw new EntityServiceException("Пароль не может состоять только из пробельных символов");
         }
-        if (repository.findByLogin(login).isPresent() && (login!= profile.getCredentials().getLogin()) ) {
+    }
+
+    public void checkLoginAlreadyExists(String login) {
+        if (findByLogin(login).isPresent()) {
             throw new EntityServiceException(String.format("Выбранный логин уже используется: %s", login));
         }
-        profile.setCredentials(new Credentials(login,password.hashCode()));
-        profile.setName(name);
-        profileService.save(profile);
     }
 
     public void register(String name, String login, String password, Role role) {
-        if (name.isBlank()) {
-            throw new EntityServiceException("Имя пользователя не может состоять только из пробельных символов");
-        }
+        checkFields(name, login, password);
+        checkLoginAlreadyExists(login);
 
-        if (login.isBlank()) {
-            throw new EntityServiceException("Логин не может состоять только из пробельных символов");
-        }
-
-        if (password.isBlank()) {
-            throw new EntityServiceException("Пароль не может состоять только из пробельных символов");
-        }
-
-        if (repository.findByLogin(login).isPresent()) {
-            throw new EntityServiceException(String.format("Выбранный логин уже используется: %s", login));
-        }
-
-        long passwordHash = Credentials.calculatePasswordHash(password);
-        Credentials credentials = new Credentials(login, passwordHash);
-
+        Credentials credentials = new Credentials(login, password);
         Profile profile = new Profile(name, role, credentials);
 
         credentials.setProfile(profile);
         save(credentials);
-
         profileService.save(profile);
     }
 
-    private Optional<Profile> authenticate(String login, String password) {
+    public void update(String name, String login, String password, Profile profile){
+        checkFields(name, login, password);
+        if (!login.equals(profile.getCredentials().getLogin())) {
+            checkLoginAlreadyExists(login);
+        }
+
+        profile.setName(name);
+        profile.getCredentials().setLogin(login);
+        profile.getCredentials().setPassword(password);
+        profileService.save(profile);
+    }
+
+    public Optional<Profile> authenticate(String login, String password) {
         try {
-            Optional<Credentials> credentials = repository.findByLoginAndPasswordHash(
+            Optional<Credentials> credentials = findByLoginAndPasswordHash(
                     login, Credentials.calculatePasswordHash(password)
             );
 
@@ -88,20 +92,5 @@ public class CredentialsService extends AbstractEntityService<Credentials, Crede
         } catch (Exception e) {
             throw new EntityServiceException(e);
         }
-    }
-
-    public Optional signIn(String login, String password) {
-        Profile _value;
-        authenticate(login, password).ifPresentOrElse(
-                (value) ->
-                {_value = new Profile(value.getName(),value.getRole(),value.getCredentials());},
-                () -> { throw new EntityServiceException("Некорректные логин/пароль"); }
-        );
-        return _value;
-    }
-
-    public void signUp(String name, String login, String password) {
-        register(name, login, password, Role.USER);
-        signIn(login, password);
     }
 }

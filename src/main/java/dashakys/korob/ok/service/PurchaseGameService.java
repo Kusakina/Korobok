@@ -14,8 +14,12 @@ import java.util.List;
 @Service
 public class PurchaseGameService extends AbstractEntityService<PurchaseGame, PurchaseGameRepository> {
 
-    public PurchaseGameService(PurchaseGameRepository repository) {
+    private final ShopGameService shopGameService;
+
+    public PurchaseGameService(PurchaseGameRepository repository,
+                               ShopGameService shopGameService) {
         super(repository);
+        this.shopGameService = shopGameService;
     }
 
     public List<PurchaseGame> findAllByPurchase(Purchase purchase) {
@@ -26,7 +30,7 @@ public class PurchaseGameService extends AbstractEntityService<PurchaseGame, Pur
         }
     }
 
-    public void addPurchaseGame(Purchase purchase, ShopGame shopGame, int count) {
+    public void addPurchasedGames(Purchase purchase, ShopGame shopGame, int count) {
         if (count > shopGame.getCount()) {
             throw new EntityServiceException(String.format("Запрошенное количество %d больше имеющегося %d", count, shopGame.getCount()));
         }
@@ -36,27 +40,37 @@ public class PurchaseGameService extends AbstractEntityService<PurchaseGame, Pur
             save(purchaseGame);
         }
     }
-    public void addPurchaseGame(PurchaseService purchaseService, Purchase purchase, List <ShopGame> list, ShopGameService shopGameService) {
-        if (list.size() == 0)throw new EntityServiceException("В коробе пусто :(");
-        String error ="";
-        for (int i=0; i<list.size();++i){
-            if (list.get(i).getCount() > shopGameService.findAllByGame(list.get(i).getGame().getName()).get(0).getCount())
-            {
-                error+= String.format("Количество выбранного вами товара %s = %d, но на складе имеется только %d \n",
-                        list.get(i).getGameName(),
-                        list.get(i).getCount(),
-                        shopGameService.findAllByGame(list.get(i).getGame().getName()).get(0).getCount());
-                purchaseService.remove(purchase);
+
+    public void addPurchasedGames(Purchase purchase, List <ShopGame> purchasedGames) {
+        for (ShopGame purchasedGame: purchasedGames) {
+            PurchaseGame purchaseGame = new PurchaseGame(purchase, purchasedGame, purchasedGame.getCount());
+            save(purchaseGame);
+
+            var databaseGame = shopGameService.findByGame(purchasedGame.getGame());
+            databaseGame.setCount(databaseGame.getCount() - purchasedGame.getCount());
+            shopGameService.save(databaseGame);
+        }
+    }
+
+    public void checkGamesCount(List<ShopGame> games) {
+        StringBuilder error = new StringBuilder();
+
+        for (ShopGame shopGame : games) {
+            int databaseCount = shopGameService.findByGame(shopGame.getGame()).getCount();
+            if (shopGame.getCount() > databaseCount) {
+                error.append(
+                        String.format(
+                                "Количество выбранного вами товара %s = %d, но на складе имеется только %d \n",
+                                shopGame.getGameName(),
+                                shopGame.getCount(),
+                                databaseCount
+                        )
+                );
             }
         }
-        if (error == "") throw new EntityServiceException(error);
 
-
-
-        for(int i =0; i< list.size();++i){
-            PurchaseGame purchaseGame = new PurchaseGame(purchase, list.get(i), list.get(i).getCount());
-            save(purchaseGame);
+        if (error.length() > 0) {
+            throw new EntityServiceException(error.toString());
         }
-
     }
 }

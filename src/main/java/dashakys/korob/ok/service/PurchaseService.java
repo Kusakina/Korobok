@@ -2,27 +2,29 @@ package dashakys.korob.ok.service;
 
 import javax.transaction.Transactional;
 
-import dashakys.korob.ok.model.Credentials;
 import dashakys.korob.ok.model.Profile;
 import dashakys.korob.ok.model.Purchase;
+import dashakys.korob.ok.model.ShopGame;
 import dashakys.korob.ok.repository.PurchaseRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Transactional
 @Service
 public class PurchaseService extends AbstractEntityService<Purchase, PurchaseRepository> {
 
-    private Purchase selectedPurchase;
+    private final ProfileService profileService;
+    private final PurchaseGameService purchaseGameService;
 
-    public PurchaseService(PurchaseRepository repository) {
+    public PurchaseService(PurchaseRepository repository,
+                           ProfileService profileService,
+                           PurchaseGameService purchaseGameService) {
         super(repository);
+        this.profileService = profileService;
+        this.purchaseGameService = purchaseGameService;
     }
 
-    public void select(Purchase order) { this.selectedPurchase = order; }
-    public Purchase getSelectedPurchase() { return selectedPurchase; }
     public List <Purchase> findAllByClient(Profile client) {
         try {
             return repository.findAllByClient(client);
@@ -31,4 +33,23 @@ public class PurchaseService extends AbstractEntityService<Purchase, PurchaseRep
         }
     }
 
+    public void createOrder(
+            List<ShopGame> games,
+            Profile profile
+    ) {
+        if (games.isEmpty()){
+            throw new EntityServiceException("Короб пуст :(");
+        }
+
+        purchaseGameService.checkGamesCount(games);
+
+        Purchase purchase = new Purchase(
+                profile,
+                profileService.findByLogin("admin").get()
+        );
+
+        save(purchase);
+
+        purchaseGameService.addPurchasedGames(purchase, games);
+    }
 }

@@ -1,24 +1,20 @@
 package dashakys.korob.ok.service;
 
-import dashakys.korob.ok.model.Cart;
 import dashakys.korob.ok.model.Profile;
-import dashakys.korob.ok.model.ShopGame;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 @Service
 public class CartMapService {
-    private HashMap<Profile, Cart> cartGameService;
+    private Map<Profile, CartService> cartGameService;
     CartMapService(){
         this.cartGameService = new HashMap<>();
     }
-    public HashMap get(){
-        return this.cartGameService;
-    }
+//    public Map<Profile, Cart> get(){
+//        return this.cartGameService;
+//    }
    /* @Override
     public int size() {
         return 0;

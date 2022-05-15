@@ -7,6 +7,7 @@ import dashakys.korob.ok.model.ShopGame;
 import dashakys.korob.ok.repository.ShopGameRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.DoubleSummaryStatistics;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -37,26 +38,20 @@ public class ShopGameService extends AbstractEntityService<ShopGame, ShopGameRep
         save(shopGame);
         gameService.save(game);
     }
-    public int getCost(List<ShopGame>list){
-        int sum =0;
-        for(int i = 0; i<list.size();++i){
-           sum+= list.get(i).getPrice()*list.get(i).getCount();
-        }
-        return sum;
-    }
 
-    public List<ShopGame> findAllByGame(String name){
-        if (name == null|| name.isEmpty()) {
+    public List<ShopGame> findAllByName(String name){
+        if (name == null || name.isEmpty()) {
             return findAll();
         } else{
            try {
                return repository.search(name);
            } catch (Exception e) {
                 throw new EntityServiceException(e);
-            }
+           }
         }
     }
-    public List<ShopGame> findByFilter(Set<Game>selectedItems){
+
+    public List<ShopGame> findByFilter(Set<Game> selectedItems){
         if (selectedItems.isEmpty()) {
             return findAll();
         } else{
@@ -72,6 +67,14 @@ public class ShopGameService extends AbstractEntityService<ShopGame, ShopGameRep
             } catch (Exception e) {
                 throw new EntityServiceException(e);
             }
+        }
+    }
+
+    public ShopGame findByGame(Game game) {
+        try {
+            return repository.findByGame(game).get();
+        } catch (Exception e) {
+            throw new EntityServiceException(e);
         }
     }
 }

@@ -2,23 +2,16 @@ package dashakys.korob.ok.view;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.applayout.AppLayout;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
-import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.spring.annotation.UIScope;
 import dashakys.korob.ok.service.*;
 
 import java.util.HashMap;
@@ -26,9 +19,17 @@ import java.util.Map;
 
 @Route(value = "userHome")
 @PageTitle("userHome")
-
 public class UserHomeView extends Div {
-    UserHomeView(ShopGameService shopGameService, GameService gameService, ProfileService profileService, CredentialsService credentialsService, PurchaseService purchaseService, CartMapService cartMapService) {
+
+    public UserHomeView(ShopGameService shopGameService,
+                        GameService gameService,
+                        ProfileService profileService,
+                        SelectedProfileService selectedProfileService,
+                        PurchaseService purchaseService,
+                        PurchaseGameService purchaseGameService,
+                        CartService cartService,
+//                        CatalogView catalogView,
+                        SelectedPurchaseService selectedPurchaseService) {
         Tab catalogue = new Tab(
                 VaadinIcon.TAGS.create(),
                 new Span("Каталог")
@@ -55,37 +56,38 @@ public class UserHomeView extends Div {
 
         Tabs tabs = new Tabs(catalogue, profile, cart, logout);
         tabs.addThemeVariants(TabsVariant.LUMO_CENTERED);
-        Map<Tab, Class> tabsMap = new HashMap<>();
+        Map<Tab, Class<?>> tabsMap = new HashMap<>();
         tabsMap.put(logout, LoginView.class);
 
 
         Map<Tab, Integer> tabsInt = new HashMap<>();
-        tabsInt.put(catalogue, 1 );
+        tabsInt.put(catalogue, 1);
         tabsInt.put(cart, 2);
-        tabsInt.put(profile,3);
-        tabsInt.put(logout,4);
+        tabsInt.put(profile, 3);
+        tabsInt.put(logout, 4);
 
         Map<Tab, Component> ViewMap = new HashMap<>();
-        ViewMap.put(catalogue, new CatalogView(shopGameService,gameService, cartMapService,profileService));
-        ViewMap.put(cart, new RegisterView(credentialsService));
-        ViewMap.put(profile, new ProfileView(profileService, purchaseService, credentialsService));
-        Component a = (Component) ViewMap.get(catalogue);
-        Component b = (Component) ViewMap.get(cart);
-        Component c = (Component) ViewMap.get(profile);
+        ViewMap.put(catalogue, new CatalogView(shopGameService,gameService, cartService));
+//        ViewMap.put(catalogue, catalogView);
+        ViewMap.put(cart, new CartView(shopGameService, gameService, purchaseService, purchaseGameService, profileService, selectedProfileService, cartService));
+        ViewMap.put(profile, new ProfileView(selectedProfileService, selectedPurchaseService, purchaseService));
+        Component a = ViewMap.get(catalogue);
+        Component b = ViewMap.get(cart);
+        Component c = ViewMap.get(profile);
         //Component d = (Component) ViewMap.get(logout);
         a.setVisible(true);
         b.setVisible(false);
         c.setVisible(false);
 
         //d.setVisible(false);
-        add(tabs,a,b,c);
+        add(tabs, a, b, c);
 
 
         //tabsMap.put(profile, RegisterView.class);
         final int[] last = {1};
         tabs.addSelectedChangeListener(event -> {
-            if (event.getSelectedTab()== logout){
-               UI.getCurrent().navigate("login2");
+            if (event.getSelectedTab() == logout) {
+                UI.getCurrent().navigate("login2");
             }
             this.getComponentAt(last[0]).setVisible(false);
             this.getComponentAt(tabsInt.get(event.getSelectedTab())).setVisible(true);

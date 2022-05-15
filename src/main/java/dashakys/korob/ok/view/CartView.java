@@ -21,19 +21,23 @@ public class CartView extends VerticalLayout {
     final Grid<ShopGame> shopGameGrid;
     private final ShopGameService shopGameService;
     private final ProfileService profileService;
+    private final SelectedProfileService selectedProfileService;
     private final GameService gameService;
     private final PurchaseGameService purchaseGameService;
     public CartView (ShopGameService shopGameService,
                      GameService gameService,
-                     List<ShopGame> list,
                      PurchaseService purchaseService,
                      PurchaseGameService purchaseGameService,
-                     ProfileService profileService){
+                     ProfileService profileService,
+                     SelectedProfileService selectedProfileService,
+                     CartService cartService){
 
         this.shopGameService = shopGameService;
         this.gameService = gameService;
         this.purchaseGameService = purchaseGameService;
         this.profileService = profileService;
+        this.selectedProfileService = selectedProfileService;
+
         this.shopGameGrid = new Grid<>(ShopGame.class, false);
         shopGameGrid.addColumn(ShopGame::getGameName).setHeader("Игра").setSortable(true);
         shopGameGrid.addColumn(ShopGame::getPrice).setHeader("Цена").setSortable(true);
@@ -45,7 +49,7 @@ public class CartView extends VerticalLayout {
             button.addClickListener(e -> {
                 int n = shopGameGrid.getEditor().getItem().getCount() - 1;
                 if (n == 0) {
-                    list.remove(shopGameGrid.getEditor().getItem());
+                    cartService.remove(shopGameGrid.getEditor().getItem());
                 } else {
                     shopGameGrid.getEditor().getItem().setCount(n);
                     shopGameGrid.getDataProvider().refreshItem(shopGameGrid.getEditor().getItem());
@@ -58,37 +62,33 @@ public class CartView extends VerticalLayout {
             button.addThemeVariants(ButtonVariant.LUMO_ICON,
                     ButtonVariant.LUMO_ERROR,
                     ButtonVariant.LUMO_TERTIARY);
-            button.addClickListener(e -> {list.remove(
-                    shopGameGrid.getEditor().getItem());
-                    shopGameGrid.getDataProvider().refreshAll();
-
+            button.addClickListener(e -> {
+                cartService.remove(shopGameGrid.getEditor().getItem());
+                shopGameGrid.getDataProvider().refreshAll();
             });
             button.setIcon(new Icon(VaadinIcon.TRASH));
         })).setHeader("уменьшить количество");
 
-        var total = new Label("Итого: "+shopGameService.getCost(list));
+        var total = new Label("Итого: " + cartService.getTotalCost());
         var toCreatePurchase = new HorizontalLayout();
         var createOrder = new Button("Создать заказ", event -> {
             try {
-                if (list.size()==0){
-                    throw new EntityServiceException("Короб пуст:(");
-                }
-                Purchase purchase = new Purchase(profileService.getSelectedProfile(), profileService.findByLogin("admin").get());
-                purchaseService.save(purchase);
-                purchaseGameService.addPurchaseGame(purchaseService, purchase, list, shopGameService);
+                purchaseService.createOrder(
+                        cartService.getGames(),
+                        selectedProfileService.getSelectedProfile()
+                );
                 UI.getCurrent().navigate("userHome");
-            } catch (EntityServiceException e) {
+            } catch (EntityServiceException | ViewException e) {
                 Notification.show(e.getMessage());
             }
         });
 
-        if (list.size()!=0) {
+        if (cartService.size() != 0) {
             toCreatePurchase.add(total, createOrder);
         }
 
-
-        add(shopGameGrid,toCreatePurchase);
-        listGames(list);
+        add(shopGameGrid, toCreatePurchase);
+        listGames(cartService.getGames());
     }
     private void listGames(List <ShopGame> list) {
         shopGameGrid.setItems(list);

@@ -12,14 +12,17 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import dashakys.korob.ok.service.CredentialsService;
 import dashakys.korob.ok.service.EntityServiceException;
+import dashakys.korob.ok.service.SelectedProfileService;
 
 @Route("register1")
 
 public class RegisterView2 extends UI {
-    CredentialsService credentialsService;
-    public RegisterView2(CredentialsService credentialsService){
-        this.credentialsService = credentialsService;
+    private final SelectedProfileService selectedProfileService;
+
+    public RegisterView2(SelectedProfileService selectedProfileService) {
+        this.selectedProfileService = selectedProfileService;
     }
+
     protected Component initContent() {
         var username = new TextField("Имя пользователя");
         var login = new TextField("Логин");
@@ -32,7 +35,7 @@ public class RegisterView2 extends UI {
                 password,
                 new Button("Стать коробчаниным", event -> {
                     try {
-                        credentialsService.signUp(username.getValue(), login.getValue(), password.getValue());
+                        selectedProfileService.signUp(username.getValue(), login.getValue(), password.getValue());
                     } catch (EntityServiceException e) {
                         Notification.show(e.getMessage());
                     }

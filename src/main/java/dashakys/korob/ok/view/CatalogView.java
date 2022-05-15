@@ -1,14 +1,11 @@
 package dashakys.korob.ok.view;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -16,32 +13,36 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
-import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
-import dashakys.korob.ok.model.Cart;
-import dashakys.korob.ok.model.Profile;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.spring.annotation.UIScope;
+import dashakys.korob.ok.service.CartService;
 import dashakys.korob.ok.model.ShopGame;
 import dashakys.korob.ok.service.*;
-import jdk.jfr.Category;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
+@Route(value = "catalog")
+@PageTitle("catalog")
 public class CatalogView extends VerticalLayout {
     //Set<ShopGame>  gameMap;
-    private CartMapService cartMapService;
     final Grid<ShopGame> shopGameGrid;
     private final ShopGameService shopGameService;
     private final GameService gameService;
-    private final ProfileService profileService;
     TextField filter = new TextField();
     Button checkFilters = new Button("Искать по коробочкам");
-    public CatalogView(ShopGameService shopGameService, GameService gameService, CartMapService cartMapService, ProfileService profileService) {
+    public CatalogView(ShopGameService shopGameService,
+                       GameService gameService,
+                       CartService cartService) {
+        this.shopGameService = shopGameService;
+        this.gameService = gameService;
+
+        this.shopGameGrid = new Grid<>(ShopGame.class, false);
 
         //this.myCart = myCart;
         List<String> category = gameService.getCategory();
@@ -67,12 +68,6 @@ public class CatalogView extends VerticalLayout {
         //filters.setFlexGrow(1, comboBox);
         configureFilter ();
 
-        this.shopGameService = shopGameService;
-        this.gameService = gameService;
-        this.shopGameGrid = new Grid<>(ShopGame.class, false);
-        this.cartMapService = cartMapService;
-        this.profileService = profileService;
-        Cart gameMap = new Cart();
         //HashMap<ShopGame, Integer> gameMap = new HashMap<>();
 
         shopGameGrid.addColumn(ShopGame::getGameName).setHeader("Игра").setSortable(true);
@@ -83,7 +78,13 @@ public class CatalogView extends VerticalLayout {
             button.addThemeVariants(ButtonVariant.LUMO_ICON,
                     ButtonVariant.LUMO_ERROR,
                     ButtonVariant.LUMO_TERTIARY);
-            button.addClickListener(e -> this.addToCart(gameMap,shopGame,profileService));
+            button.addClickListener(event -> {
+                try {
+                    cartService.addToCart(shopGame);
+                } catch (EntityServiceException e) {
+                    Notification.show(e.getMessage());
+                }
+            });
             button.setIcon(new Icon(VaadinIcon.PLUS));
         })).setHeader("Кинуть в короб");
         add(filters,shopGameGrid);
@@ -99,32 +100,17 @@ public class CatalogView extends VerticalLayout {
     }
 
     private void updateList() {
-        shopGameGrid.setItems(shopGameService.findAllByGame(filter.getValue()));
+        shopGameGrid.setItems(shopGameService.findAllByName(filter.getValue()));
     }
     private void updateListBox(Set<String> selectedItems) {
 
         shopGameGrid.setItems(shopGameService.findByFilter(gameService.findByFilter(selectedItems)));
     }
-    private void addToCart(Cart gameMap, ShopGame shopGame, ProfileService profileService){
-
-
-        if(gameMap.get(shopGame)!=null){
-            if(gameMap.get(shopGame)==shopGame.getCount()){
-                Notification.show("Упс, в коробе уже максимальное количество экземпляров этой игры");
-            }
-            gameMap.put(shopGame, 1+gameMap.get(shopGame));
-        } else{
-            gameMap.put(shopGame, 1);
-        }
-        cartMapService.get().put(profileService.getSelectedProfile(),gameMap);
-    }
 
     private void listGames() {
         shopGameGrid.setItems(shopGameService.findAll());
     }
-    private void method(){
 
-    }
     private VerticalLayout createDialogLayout(Dialog dialog, List<String> category) {
 
         CheckboxGroup <String> categoryCheckBox = new CheckboxGroup<>();
