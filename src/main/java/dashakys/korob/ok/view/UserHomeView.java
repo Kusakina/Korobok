@@ -28,7 +28,7 @@ import java.util.Map;
 @PageTitle("userHome")
 
 public class UserHomeView extends Div {
-    UserHomeView(ShopGameService shopGameService, GameService gameService, ProfileService profileService, CredentialsService credentialsService, PurchaseService purchaseService) {
+    UserHomeView(ShopGameService shopGameService, GameService gameService, ProfileService profileService, CredentialsService credentialsService, PurchaseService purchaseService, CartMapService cartMapService) {
         Tab catalogue = new Tab(
                 VaadinIcon.TAGS.create(),
                 new Span("Каталог")
@@ -66,7 +66,7 @@ public class UserHomeView extends Div {
         tabsInt.put(logout,4);
 
         Map<Tab, Component> ViewMap = new HashMap<>();
-        ViewMap.put(catalogue, new CatalogView(shopGameService,gameService));
+        ViewMap.put(catalogue, new CatalogView(shopGameService,gameService, cartMapService,profileService));
         ViewMap.put(cart, new RegisterView(credentialsService));
         ViewMap.put(profile, new ProfileView(profileService, purchaseService, credentialsService));
         Component a = (Component) ViewMap.get(catalogue);

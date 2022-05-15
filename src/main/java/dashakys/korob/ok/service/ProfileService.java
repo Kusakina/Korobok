@@ -7,23 +7,19 @@ import dashakys.korob.ok.model.Profile;
 import dashakys.korob.ok.model.Role;
 import dashakys.korob.ok.repository.ProfileRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.SessionScope;
 
 import java.util.List;
 import java.util.Optional;
 
 @Transactional
 @Service
+@SessionScope
 public class ProfileService extends AbstractEntityService<Profile, ProfileRepository> {
 
-    private Profile selectedProfile;
 
     public ProfileService(ProfileRepository repository) {
         super(repository);
-    }
-
-    public void select(Profile profile) { this.selectedProfile = profile; }
-    public Profile getSelectedProfile() {
-        return selectedProfile;
     }
 
     public Optional<Profile> findByCredentials(Credentials credentials) {

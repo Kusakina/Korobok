@@ -36,4 +36,27 @@ public class PurchaseGameService extends AbstractEntityService<PurchaseGame, Pur
             save(purchaseGame);
         }
     }
+    public void addPurchaseGame(PurchaseService purchaseService, Purchase purchase, List <ShopGame> list, ShopGameService shopGameService) {
+        if (list.size() == 0)throw new EntityServiceException("В коробе пусто :(");
+        String error ="";
+        for (int i=0; i<list.size();++i){
+            if (list.get(i).getCount() > shopGameService.findAllByGame(list.get(i).getGame().getName()).get(0).getCount())
+            {
+                error+= String.format("Количество выбранного вами товара %s = %d, но на складе имеется только %d \n",
+                        list.get(i).getGameName(),
+                        list.get(i).getCount(),
+                        shopGameService.findAllByGame(list.get(i).getGame().getName()).get(0).getCount());
+                purchaseService.remove(purchase);
+            }
+        }
+        if (error == "") throw new EntityServiceException(error);
+
+
+
+        for(int i =0; i< list.size();++i){
+            PurchaseGame purchaseGame = new PurchaseGame(purchase, list.get(i), list.get(i).getCount());
+            save(purchaseGame);
+        }
+
+    }
 }

@@ -1,5 +1,6 @@
 package dashakys.korob.ok.view;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
@@ -11,30 +12,38 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import dashakys.korob.ok.model.Cart;
 import dashakys.korob.ok.model.Profile;
 import dashakys.korob.ok.model.ShopGame;
-import dashakys.korob.ok.service.GameService;
-import dashakys.korob.ok.service.ShopGameService;
+import dashakys.korob.ok.service.*;
 import jdk.jfr.Category;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class CatalogView extends VerticalLayout {
+    //Set<ShopGame>  gameMap;
+    private CartMapService cartMapService;
     final Grid<ShopGame> shopGameGrid;
     private final ShopGameService shopGameService;
     private final GameService gameService;
+    private final ProfileService profileService;
     TextField filter = new TextField();
     Button checkFilters = new Button("Искать по коробочкам");
-    public CatalogView(ShopGameService shopGameService,GameService gameService ) {
+    public CatalogView(ShopGameService shopGameService, GameService gameService, CartMapService cartMapService, ProfileService profileService) {
 
+        //this.myCart = myCart;
         List<String> category = gameService.getCategory();
         Dialog dialog = new Dialog();
         //dialog.getElement().setAttribute("aria-label", "Add note");
@@ -61,7 +70,10 @@ public class CatalogView extends VerticalLayout {
         this.shopGameService = shopGameService;
         this.gameService = gameService;
         this.shopGameGrid = new Grid<>(ShopGame.class, false);
-
+        this.cartMapService = cartMapService;
+        this.profileService = profileService;
+        Cart gameMap = new Cart();
+        //HashMap<ShopGame, Integer> gameMap = new HashMap<>();
 
         shopGameGrid.addColumn(ShopGame::getGameName).setHeader("Игра").setSortable(true);
         shopGameGrid.addColumn(ShopGame::getPrice).setHeader("Цена").setSortable(true);
@@ -71,7 +83,7 @@ public class CatalogView extends VerticalLayout {
             button.addThemeVariants(ButtonVariant.LUMO_ICON,
                     ButtonVariant.LUMO_ERROR,
                     ButtonVariant.LUMO_TERTIARY);
-            button.addClickListener(e -> this.addToCart(shopGame));
+            button.addClickListener(e -> this.addToCart(gameMap,shopGame,profileService));
             button.setIcon(new Icon(VaadinIcon.PLUS));
         })).setHeader("Кинуть в короб");
         add(filters,shopGameGrid);
@@ -93,8 +105,18 @@ public class CatalogView extends VerticalLayout {
 
         shopGameGrid.setItems(shopGameService.findByFilter(gameService.findByFilter(selectedItems)));
     }
-    private void addToCart(ShopGame shopGame){
+    private void addToCart(Cart gameMap, ShopGame shopGame, ProfileService profileService){
 
+
+        if(gameMap.get(shopGame)!=null){
+            if(gameMap.get(shopGame)==shopGame.getCount()){
+                Notification.show("Упс, в коробе уже максимальное количество экземпляров этой игры");
+            }
+            gameMap.put(shopGame, 1+gameMap.get(shopGame));
+        } else{
+            gameMap.put(shopGame, 1);
+        }
+        cartMapService.get().put(profileService.getSelectedProfile(),gameMap);
     }
 
     private void listGames() {

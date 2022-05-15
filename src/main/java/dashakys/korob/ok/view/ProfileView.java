@@ -37,9 +37,10 @@ public class ProfileView extends Div {
     private final CredentialsService credentialsService;
     private final ProfileService profileService;
     private final PurchaseService purchaseService;
+    private final SelectedProfileService selectedProfileService;
 
-    ProfileView(ProfileService profileService, PurchaseService purchaseService, CredentialsService credentialsService) {
-
+    ProfileView(ProfileService profileService, PurchaseService purchaseService, CredentialsService credentialsService, SelectedProfileService selectedProfileService) {
+        this.selectedProfileService = selectedProfileService;
         this.profileService = profileService;
         this.purchaseService = purchaseService;
         this.credentialsService = credentialsService;
@@ -65,7 +66,7 @@ public class ProfileView extends Div {
         purchaseGrid.addColumn(Purchase::getId).setHeader("Номер заказа").setSortable(true);
         purchaseGrid.addColumn(Purchase::getManager).setHeader("Менеджер").setSortable(true);
         purchaseGrid.addColumn(Purchase::getStatus).setHeader("Статус").setSortable(true);
-        purchaseGrid.addColumn(Purchase::getCost).setHeader("Цена").setSortable(true);
+        purchaseGrid.addColumn(Purchase::getCost).setHeader("Стоимость").setSortable(true);
         //purchaseGrid.setSelectionMode(Grid.SelectionMode.SINGLE);
         purchaseGrid.addColumn ( new ComponentRenderer<>( Button:: new, (button, purchase)-> {
             button.addThemeVariants(ButtonVariant.LUMO_ICON,
@@ -104,7 +105,7 @@ public class ProfileView extends Div {
     }
 
     private void listPurchase() {
-        purchaseGrid.setItems(purchaseService.findAllByClient(profileService.getSelectedProfile()));
+        purchaseGrid.setItems(purchaseService.findAllByClient(selectedProfileService.getSelectedProfile()));
     }
     private VerticalLayout createDialogLayout(Dialog dialog) {
 

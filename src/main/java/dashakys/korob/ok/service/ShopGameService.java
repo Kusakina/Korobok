@@ -37,6 +37,14 @@ public class ShopGameService extends AbstractEntityService<ShopGame, ShopGameRep
         save(shopGame);
         gameService.save(game);
     }
+    public int getCost(List<ShopGame>list){
+        int sum =0;
+        for(int i = 0; i<list.size();++i){
+           sum+= list.get(i).getPrice()*list.get(i).getCount();
+        }
+        return sum;
+    }
+
     public List<ShopGame> findAllByGame(String name){
         if (name == null|| name.isEmpty()) {
             return findAll();

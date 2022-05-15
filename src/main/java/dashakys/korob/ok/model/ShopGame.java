@@ -19,6 +19,12 @@ public class ShopGame extends DatabaseEntity {
     @Column
     private int count;
 
+    public ShopGame(ShopGame shopGame){
+        this.game = shopGame.game;
+        this.count = 1;
+        this.price = shopGame.price;
+    }
+
     @Override
     public String toString() {
         return "ShopGame{" +

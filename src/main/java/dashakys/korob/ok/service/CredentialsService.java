@@ -8,17 +8,20 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Transactional
 @Service
 public class CredentialsService extends AbstractEntityService<Credentials, CredentialsRepository> {
 
     private final ProfileService profileService;
+    //private final SelectedProfileService selectedProfileService;
 
     public CredentialsService(CredentialsRepository repository,
-                              ProfileService profileService) {
+                              ProfileService profileService, SelectedProfileService selectedProfileService) {
         super(repository);
         this.profileService = profileService;
+        //this.selectedProfileService = selectedProfileService;
     }
 
     public Optional<Credentials> findByLogin(String login) {
@@ -87,11 +90,14 @@ public class CredentialsService extends AbstractEntityService<Credentials, Crede
         }
     }
 
-    public void signIn(String login, String password) {
+    public Optional signIn(String login, String password) {
+        Profile _value;
         authenticate(login, password).ifPresentOrElse(
-                profileService::select,
+                (value) ->
+                {_value = new Profile(value.getName(),value.getRole(),value.getCredentials());},
                 () -> { throw new EntityServiceException("Некорректные логин/пароль"); }
         );
+        return _value;
     }
 
     public void signUp(String name, String login, String password) {
