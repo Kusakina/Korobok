@@ -90,6 +90,7 @@ public class UserHomeView extends Div {
                 UI.getCurrent().navigate("login2");
             }
             this.getComponentAt(last[0]).setVisible(false);
+
             this.getComponentAt(tabsInt.get(event.getSelectedTab())).setVisible(true);
             var left = tabsInt.get(event.getSelectedTab());
             last[0] = left;

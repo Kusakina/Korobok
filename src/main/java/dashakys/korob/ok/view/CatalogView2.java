@@ -11,7 +11,6 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -19,29 +18,27 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import com.vaadin.flow.spring.annotation.UIScope;
-import dashakys.korob.ok.service.CartService;
 import dashakys.korob.ok.model.ShopGame;
 import dashakys.korob.ok.service.*;
 
 import java.util.List;
 import java.util.Set;
 
-@Route(value = "catalog")
-@PageTitle("catalog")
-public class CatalogView extends VerticalLayout {
+@Route(value = "catalog2", layout = UserHouse.class)
+@PageTitle("catalog2")
+public class CatalogView2 extends VerticalLayout {
     //Set<ShopGame>  gameMap;
     final Grid<ShopGame> shopGameGrid;
-    private final ShopGameService shopGameService;
-    private final GameService gameService;
+    //private final ShopGameService shopGameService;
+    //private final GameService gameService;
     TextField filter = new TextField();
     Button checkFilters = new Button("Искать по коробочкам");
-    public CatalogView(ShopGameService shopGameService,
-                       GameService gameService,
-                       CartService cartService) {
-        this.shopGameService = shopGameService;
-        this.gameService = gameService;
+    public CatalogView2(ShopGameService shopGameService,
+                        GameService gameService,
+                        CartService cartService,
+                        SelectedProfileService selectedProfileService) {
+        //this.shopGameService = shopGameService;
+        //this.gameService = gameService;
 
         this.shopGameGrid = new Grid<>(ShopGame.class, false);
 
@@ -50,7 +47,7 @@ public class CatalogView extends VerticalLayout {
         Dialog dialog = new Dialog();
         //dialog.getElement().setAttribute("aria-label", "Add note");
 
-        VerticalLayout dialogLayout = createDialogLayout(dialog, category);
+        VerticalLayout dialogLayout = createDialogLayout(dialog, category,shopGameService, gameService);
         dialog.add(dialogLayout);
         dialog.setCloseOnOutsideClick(true);
 
@@ -67,7 +64,7 @@ public class CatalogView extends VerticalLayout {
 
         HorizontalLayout filters = new HorizontalLayout(filter, checkFilters);
         //filters.setFlexGrow(1, comboBox);
-        configureFilter ();
+        configureFilter (shopGameService);
 
         //HashMap<ShopGame, Integer> gameMap = new HashMap<>();
 
@@ -82,38 +79,40 @@ public class CatalogView extends VerticalLayout {
             button.addClickListener(event -> {
                 try {
                     cartService.addToCart(shopGame);
-                    UI.getCurrent().getPage().reload();
+                    //UI.getCurrent().getPage().reload();
                 } catch (EntityServiceException e) {
                     Notification.show(e.getMessage());
                 }
             });
             button.setIcon(new Icon(VaadinIcon.PLUS));
         })).setHeader("Кинуть в короб");
-        add(filters,shopGameGrid);
-        listGames();
+        if(selectedProfileService.getSelectedProfile()!= null) {
+            add(filters, shopGameGrid);
+        }
+        listGames(shopGameService);
     }
 
-    private void configureFilter() {
+    private void configureFilter(ShopGameService shopGameService) {
         filter.setPlaceholder("Поиск по игре");
         filter.setPrefixComponent(VaadinIcon.SEARCH.create());
         filter.setClearButtonVisible(true);
         filter.setValueChangeMode(ValueChangeMode.LAZY);
-        filter.addValueChangeListener(e -> updateList());
+        filter.addValueChangeListener(e -> updateList(shopGameService));
     }
 
-    private void updateList() {
+    private void updateList(ShopGameService shopGameService) {
         shopGameGrid.setItems(shopGameService.findAllByName(filter.getValue()));
     }
-    private void updateListBox(Set<String> selectedItems) {
+    private void updateListBox(Set<String> selectedItems, ShopGameService shopGameService, GameService gameService) {
 
         shopGameGrid.setItems(shopGameService.findByFilter(gameService.findByFilter(selectedItems)));
     }
 
-    private void listGames() {
+    private void listGames(ShopGameService shopGameService) {
         shopGameGrid.setItems(shopGameService.findAll());
     }
 
-    private VerticalLayout createDialogLayout(Dialog dialog, List<String> category) {
+    private VerticalLayout createDialogLayout(Dialog dialog, List<String> category, ShopGameService shopGameService, GameService gameService) {
 
         CheckboxGroup <String> categoryCheckBox = new CheckboxGroup<>();
         categoryCheckBox.setLabel("Категория");
@@ -121,7 +120,7 @@ public class CatalogView extends VerticalLayout {
         categoryCheckBox.addThemeVariants(CheckboxGroupVariant.LUMO_VERTICAL);
        Button addButton =  new Button("Применить");
        addButton.addClickListener(event ->{
-            updateListBox(categoryCheckBox.getSelectedItems());
+            updateListBox(categoryCheckBox.getSelectedItems(),shopGameService, gameService);
             dialog.close();
        });
        addButton.setWidth("50.0%");
@@ -135,7 +134,7 @@ public class CatalogView extends VerticalLayout {
         );
         layout.setSpacing(true);
         layout.setPadding(false);
-        layout.setAlignItems(FlexComponent.Alignment.STRETCH);
+        layout.setAlignItems(Alignment.STRETCH);
         layout.getStyle().set("width", "300px").set("max-width", "100%");
         layout.setAlignItems(Alignment.CENTER);
         return layout;

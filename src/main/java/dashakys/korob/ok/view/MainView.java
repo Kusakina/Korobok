@@ -8,7 +8,7 @@ import dashakys.korob.ok.model.ShopGame;
 import dashakys.korob.ok.service.ProfileService;
 import dashakys.korob.ok.service.ShopGameService;
 
-@Route
+//@Route
 public class MainView extends VerticalLayout {
 
 	private final ProfileService profileService;

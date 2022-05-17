@@ -26,7 +26,9 @@ public class SelectedProfileService {
     public Profile getSelectedProfile() {
         return selectedProfile;
     }
-
+    public Profile setSelectedProfile() {
+        return this.selectedProfile = null;
+    }
 
     public void update(String name, String login, String password){
         credentialsService.update(name, login, password, getSelectedProfile());

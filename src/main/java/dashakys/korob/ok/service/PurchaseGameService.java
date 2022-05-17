@@ -46,8 +46,10 @@ public class PurchaseGameService extends AbstractEntityService<PurchaseGame, Pur
             PurchaseGame purchaseGame = new PurchaseGame(purchase, purchasedGame, purchasedGame.getCount());
             save(purchaseGame);
 
-            var databaseGame = shopGameService.findByGame(purchasedGame.getGame());
-            databaseGame.setCount(databaseGame.getCount() - purchasedGame.getCount());
+            var databaseGame = shopGameService.findByGame(purchaseGame.getShopGame().getGame());
+            // var databaseGame = shopGameService.findByGame(purchasedGame.getGame());
+            //databaseGame.setCount(databaseGame.getCount() - purchasedGame.getCount());
+            databaseGame.setCount(databaseGame.getCount() - purchaseGame.getCount());
             shopGameService.save(databaseGame);
         }
     }

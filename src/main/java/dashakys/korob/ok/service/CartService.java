@@ -24,6 +24,7 @@ public class CartService {
         }
 
         cart.put(shopGame, cartCount + 1);
+
     }
 
     public List<ShopGame> getGames() {
@@ -39,6 +40,13 @@ public class CartService {
                 .mapToInt(e -> e.getKey().getPrice() * e.getValue())
                 .sum();
     }
+    public  List<Integer> getCount(){
+        return cart.entrySet().stream()
+                .map(e -> {
+                    var count = e.getValue();
+                    return count;
+                }).collect(Collectors.toUnmodifiableList());
+    }
 
     public int size() {
         return cart.size();
@@ -50,6 +58,13 @@ public class CartService {
 
     public void remove(ShopGame key) {
         cart.remove(key);
+    }
+    public void removeAll(){
+        cart.clear();
+    }
+
+    public void setCount(ShopGame shopGame, int n) {
+        cart.put(shopGame, n);
     }
 //    public void put(ShopGame key, Integer value) {
 //        cart.put(key,value);

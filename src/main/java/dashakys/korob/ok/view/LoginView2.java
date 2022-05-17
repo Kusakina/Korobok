@@ -14,23 +14,28 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import dashakys.korob.ok.service.CartService;
 import dashakys.korob.ok.service.CredentialsService;
 import dashakys.korob.ok.service.EntityServiceException;
 import dashakys.korob.ok.service.SelectedProfileService;
 
-@Route(value = "login2")
+//@Route(value = "login2")
+@Route(value = "")
 @PageTitle("login2")
 
 public class LoginView2 extends Composite {
     private final SelectedProfileService selectedProfileService;
+    private final CartService cartService;
 
-    public LoginView2(SelectedProfileService selectedProfileService) {
+    public LoginView2(SelectedProfileService selectedProfileService, CartService cartService) {
         this.selectedProfileService = selectedProfileService;
+        this.cartService = cartService;
     }
 
     @Override
     protected Component initContent() {
-
+        selectedProfileService.setSelectedProfile();
+        cartService.removeAll();
         var login = new TextField("Логин");
         var password = new PasswordField("Пароль");
 
@@ -41,7 +46,7 @@ public class LoginView2 extends Composite {
                 new Button("Закоробиться", event -> {
                     try {
                         selectedProfileService.signIn(login.getValue(), password.getValue());
-                        UI.getCurrent().navigate("userHome");
+                        UI.getCurrent().navigate("userHouse");
                     } catch (EntityServiceException e) {
                         Notification.show("Неверный логин/пароль");
                     }
