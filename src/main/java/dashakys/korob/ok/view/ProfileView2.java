@@ -23,7 +23,7 @@ import dashakys.korob.ok.service.PurchaseService;
 import dashakys.korob.ok.service.SelectedProfileService;
 import dashakys.korob.ok.service.SelectedPurchaseService;
 @Route(value = "profile2", layout = UserHouse.class)
-@PageTitle("profile")
+@PageTitle("profile2")
 
 public class ProfileView2 extends Div {
     final Grid<Purchase> purchaseGrid;
@@ -40,21 +40,23 @@ public class ProfileView2 extends Div {
 
         Button profileSettings = new Button("Изменить учето4ку");
         Dialog dialog = new Dialog();
-        VerticalLayout dialogLayout = createDialogLayout(dialog, selectedProfileService);
-        dialog.add(dialogLayout);
 
-        dialog.setCloseOnOutsideClick(true);
-        profileSettings.addClickListener(e -> dialog.open());
-        var changeProfileButton = new VerticalLayout();
-        changeProfileButton.add(profileSettings);
 
         this.purchaseGrid= new Grid<>(Purchase.class, false);
         var grid = createPurchaseGrid(purchaseGrid, selectedPurchaseService);
 
         if(selectedProfileService.getSelectedProfile()!= null) {
+            VerticalLayout dialogLayout = createDialogLayout(dialog, selectedProfileService);
+            dialog.add(dialogLayout);
+
+            dialog.setCloseOnOutsideClick(true);
+            profileSettings.addClickListener(e -> dialog.open());
+            var changeProfileButton = new VerticalLayout();
+            changeProfileButton.add(profileSettings);
             add(changeProfileButton, grid);
+            listPurchase(selectedProfileService, purchaseService);
         }
-        listPurchase(selectedProfileService, purchaseService);
+
 
     }
     private VerticalLayout createPurchaseGrid (Grid<Purchase> purchaseGrid, SelectedPurchaseService selectedPurchaseService){
