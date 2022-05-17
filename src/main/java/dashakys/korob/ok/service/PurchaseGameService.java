@@ -2,6 +2,7 @@ package dashakys.korob.ok.service;
 
 import javax.transaction.Transactional;
 
+import dashakys.korob.ok.model.OrderedGame;
 import dashakys.korob.ok.model.Purchase;
 import dashakys.korob.ok.model.PurchaseGame;
 import dashakys.korob.ok.model.ShopGame;
@@ -41,30 +42,35 @@ public class PurchaseGameService extends AbstractEntityService<PurchaseGame, Pur
         }
     }
 
-    public void addPurchasedGames(Purchase purchase, List <ShopGame> purchasedGames) {
-        for (ShopGame purchasedGame: purchasedGames) {
-            PurchaseGame purchaseGame = new PurchaseGame(purchase, purchasedGame, purchasedGame.getCount());
+    public void addPurchasedGames(Purchase purchase, List <OrderedGame> orderedGames) {
+        for (var orderedGame : orderedGames) {
+            PurchaseGame purchaseGame = new PurchaseGame(
+                    purchase,
+                    orderedGame.getShopGame(),
+                    orderedGame.getCount()
+            );
             save(purchaseGame);
 
             var databaseGame = shopGameService.findByGame(purchaseGame.getShopGame().getGame());
-            // var databaseGame = shopGameService.findByGame(purchasedGame.getGame());
-            //databaseGame.setCount(databaseGame.getCount() - purchasedGame.getCount());
+            // var databaseGame = shopGameService.findByGame(orderedGame.getGame());
+            //databaseGame.setCount(databaseGame.getCount() - orderedGame.getCount());
             databaseGame.setCount(databaseGame.getCount() - purchaseGame.getCount());
             shopGameService.save(databaseGame);
         }
     }
 
-    public void checkGamesCount(List<ShopGame> games) {
+    public void checkGamesCount(List<OrderedGame> games) {
         StringBuilder error = new StringBuilder();
 
-        for (ShopGame shopGame : games) {
+        for (var orderedGame : games) {
+            var shopGame = orderedGame.getShopGame();
             int databaseCount = shopGameService.findByGame(shopGame.getGame()).getCount();
-            if (shopGame.getCount() > databaseCount) {
+            if (orderedGame.getCount() > databaseCount) {
                 error.append(
                         String.format(
                                 "Количество выбранного вами товара %s = %d, но на складе имеется только %d \n",
-                                shopGame.getGameName(),
-                                shopGame.getCount(),
+                                orderedGame.getGameName(),
+                                orderedGame.getCount(),
                                 databaseCount
                         )
                 );

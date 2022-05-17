@@ -2,6 +2,7 @@ package dashakys.korob.ok.service;
 
 import javax.transaction.Transactional;
 
+import dashakys.korob.ok.model.OrderedGame;
 import dashakys.korob.ok.model.Profile;
 import dashakys.korob.ok.model.Purchase;
 import dashakys.korob.ok.model.ShopGame;
@@ -34,7 +35,7 @@ public class PurchaseService extends AbstractEntityService<Purchase, PurchaseRep
     }
 
     public void createOrder(
-            List<ShopGame> games,
+            List<OrderedGame> games,
             Profile profile
     ) {
         if (games.isEmpty()){

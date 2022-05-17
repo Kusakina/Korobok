@@ -2,6 +2,7 @@ package dashakys.korob.ok.service;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.VaadinSessionScope;
+import dashakys.korob.ok.model.OrderedGame;
 import dashakys.korob.ok.model.ShopGame;
 
 import java.util.HashMap;
@@ -27,12 +28,10 @@ public class CartService {
 
     }
 
-    public List<ShopGame> getGames() {
+    public List<OrderedGame> getGames() {
         return cart.entrySet().stream()
-                .map(e -> {
-                    var shopGame = e.getKey();
-                    return new ShopGame(shopGame.getGame(), shopGame.getPrice(), e.getValue());
-                }).collect(Collectors.toUnmodifiableList());
+                .map(e -> new OrderedGame(e.getKey(), e.getValue()))
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public int getTotalCost() {
@@ -56,8 +55,8 @@ public class CartService {
         return size() == 0;
     }
 
-    public void remove(ShopGame key) {
-        cart.remove(key);
+    public void remove(OrderedGame key) {
+        cart.remove(key.getShopGame());
     }
     public void removeAll(){
         cart.clear();

@@ -11,14 +11,14 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
-import dashakys.korob.ok.model.Purchase;
+import dashakys.korob.ok.model.OrderedGame;
 import dashakys.korob.ok.model.ShopGame;
 import dashakys.korob.ok.service.*;
 
 import java.util.List;
 
 public class CartView extends VerticalLayout {
-    final Grid<ShopGame> shopGameGrid;
+    final Grid<OrderedGame> orderedGameGrid;
     private final ShopGameService shopGameService;
     private final ProfileService profileService;
     private final SelectedProfileService selectedProfileService;
@@ -37,34 +37,34 @@ public class CartView extends VerticalLayout {
         this.purchaseGameService = purchaseGameService;
         this.profileService = profileService;
         this.selectedProfileService = selectedProfileService;
-        this.shopGameGrid = new Grid<>(ShopGame.class, false);
+        this.orderedGameGrid = new Grid<>(OrderedGame.class, false);
 
-        shopGameGrid.addColumn(ShopGame::getGameName).setHeader("Игра").setSortable(true);
-        shopGameGrid.addColumn(ShopGame::getPrice).setHeader("Цена").setSortable(true);
-        shopGameGrid.addColumn(ShopGame::getCount).setHeader("Количество").setSortable(true);
-        shopGameGrid.addColumn ( new ComponentRenderer<>( Button:: new, (button, shopGame)-> {
+        orderedGameGrid.addColumn(OrderedGame::getGameName).setHeader("Игра").setSortable(true);
+        orderedGameGrid.addColumn(OrderedGame::getPrice).setHeader("Цена").setSortable(true);
+        orderedGameGrid.addColumn(OrderedGame::getCount).setHeader("Количество").setSortable(true);
+        orderedGameGrid.addColumn ( new ComponentRenderer<>( Button:: new, (button, shopGame)-> {
             button.addThemeVariants(ButtonVariant.LUMO_ICON,
                     ButtonVariant.LUMO_ERROR,
                     ButtonVariant.LUMO_TERTIARY);
             button.addClickListener(e -> {
-                int n = shopGameGrid.getEditor().getItem().getCount() - 1;
+                int n = orderedGameGrid.getEditor().getItem().getCount() - 1;
                 if (n == 0) {
-                    cartService.remove(shopGameGrid.getEditor().getItem());
+                    cartService.remove(orderedGameGrid.getEditor().getItem());
                 } else {
-                    shopGameGrid.getEditor().getItem().setCount(n);
-                    shopGameGrid.getDataProvider().refreshItem(shopGameGrid.getEditor().getItem());
+                    orderedGameGrid.getEditor().getItem().setCount(n);
+                    orderedGameGrid.getDataProvider().refreshItem(orderedGameGrid.getEditor().getItem());
                 }
                 button.setIcon(new Icon(VaadinIcon.MINUS));
             });
         })).setHeader("уменьшить количество");
 
-        shopGameGrid.addColumn ( new ComponentRenderer<>( Button:: new, (button, shopGame)-> {
+        orderedGameGrid.addColumn ( new ComponentRenderer<>( Button:: new, (button, shopGame)-> {
             button.addThemeVariants(ButtonVariant.LUMO_ICON,
                     ButtonVariant.LUMO_ERROR,
                     ButtonVariant.LUMO_TERTIARY);
             button.addClickListener(e -> {
-                cartService.remove(shopGameGrid.getEditor().getItem());
-                shopGameGrid.getDataProvider().refreshAll();
+                cartService.remove(orderedGameGrid.getEditor().getItem());
+                orderedGameGrid.getDataProvider().refreshAll();
             });
             button.setIcon(new Icon(VaadinIcon.TRASH));
         })).setHeader("Удалить");
@@ -87,11 +87,11 @@ public class CartView extends VerticalLayout {
             toCreatePurchase.add(total, createOrder);
         }
 
-        add(shopGameGrid, toCreatePurchase);
+        add(orderedGameGrid, toCreatePurchase);
         listGames(cartService.getGames());
     }
-    private void listGames(List <ShopGame> list) {
-        shopGameGrid.setItems(list);
+    private void listGames(List<OrderedGame> list) {
+        orderedGameGrid.setItems(list);
     }
 
 }
