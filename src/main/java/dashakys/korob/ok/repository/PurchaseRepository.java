@@ -13,4 +13,5 @@ public interface PurchaseRepository extends EntityRepository<Purchase> {
     List<Purchase> findAllByClient(Profile client);
     List<Purchase> findAllByManager(Profile manager);
     List<Purchase> findAllByStatus(Status status);
+    Optional<Purchase> findById(long id);
 }

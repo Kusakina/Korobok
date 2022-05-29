@@ -14,6 +14,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import dashakys.korob.ok.model.Role;
 import dashakys.korob.ok.service.CartService;
 import dashakys.korob.ok.service.CredentialsService;
 import dashakys.korob.ok.service.EntityServiceException;
@@ -46,7 +47,11 @@ public class LoginView2 extends Composite {
                 new Button("Закоробиться", event -> {
                     try {
                         selectedProfileService.signIn(login.getValue(), password.getValue());
-                        UI.getCurrent().navigate("userHouse");
+                        if (selectedProfileService.getSelectedProfile().getRole() == Role.ADMIN){
+                            UI.getCurrent().navigate("adminHouse");
+                        } else {
+                            UI.getCurrent().navigate("userHouse");
+                        }
                     } catch (EntityServiceException e) {
                         Notification.show("Неверный логин/пароль");
                     }

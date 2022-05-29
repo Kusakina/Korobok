@@ -61,7 +61,8 @@ public class ProfileView2 extends Div {
     }
     private VerticalLayout createPurchaseGrid (Grid<Purchase> purchaseGrid, SelectedPurchaseService selectedPurchaseService){
         purchaseGrid.addColumn(Purchase::getId).setHeader("Номер заказа").setSortable(true);
-        purchaseGrid.addColumn(Purchase::getManager).setHeader("Менеджер").setSortable(true);
+        purchaseGrid.addColumn(purchase -> {return purchase.getManager().getName(); }).setHeader("Менеджер").setSortable(true);
+        //purchaseGrid.addColumn(Purchase::getManager).setHeader("Менеджер").setSortable(true);
         purchaseGrid.addColumn(Purchase::getStatus).setHeader("Статус").setSortable(true);
         purchaseGrid.addColumn(Purchase::getCost).setHeader("Стоимость").setSortable(true);
         //purchaseGrid.setSelectionMode(Grid.SelectionMode.SINGLE);

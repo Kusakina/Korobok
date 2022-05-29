@@ -10,6 +10,7 @@ import dashakys.korob.ok.repository.PurchaseRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Transactional
 @Service
@@ -53,4 +54,30 @@ public class PurchaseService extends AbstractEntityService<Purchase, PurchaseRep
 
         purchaseGameService.addPurchasedGames(purchase, games);
     }
+
+    public void createOrder(
+            List<OrderedGame> games,
+            Profile profile,
+            int cost
+    ) {
+        if (games.isEmpty()){
+            throw new EntityServiceException("Короб пуст :(");
+        }
+
+        purchaseGameService.checkGamesCount(games);
+
+        Purchase purchase = new Purchase(
+                profile,
+                profileService.findByLogin("admin").get(),
+                cost
+        );
+
+        save(purchase);
+
+        purchaseGameService.addPurchasedGames(purchase, games);
+    }
+    public Optional<Purchase> findById(long id){
+        return repository.findById(id);
+    }
+
 }

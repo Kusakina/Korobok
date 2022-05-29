@@ -28,5 +28,5 @@ public interface ShopGameRepository extends EntityRepository<ShopGame> {
     )*/
 
     //List<ShopGame> searchByFilter (@Param("value") String value);
-    List<ShopGame> findByGameIn(Set<Game>selectedItems);
+    List<ShopGame> findByGameIn(Set<Game> games);
 }

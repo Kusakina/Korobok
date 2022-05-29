@@ -71,4 +71,37 @@ public class GameService extends AbstractEntityService<Game, GameRepository> {
                 throw new EntityServiceException(e);
             }
     }
+
+    public void checkFields(String name, Integer minPlayer, Integer maxPlayer, Game game) {
+        if (minPlayer!= null && minPlayer <= 0) {
+            throw new EntityServiceException("Боюсь, так поиграть не получится?\n Укажите хотя бы одного игрока!");
+        }
+        if (maxPlayer!= null && maxPlayer <= 0) {
+            throw new EntityServiceException("Боюсь, так поиграть не получится?\n Укажите хотя бы одного игрока!");
+        }
+        if (!name.equals(game.getName())){
+            if (name.isBlank()) {
+                throw new EntityServiceException("Название игры не должно состоять только из пробельных символов");
+            }
+
+            if (findByName(name).isPresent()) {
+                throw new EntityServiceException(String.format("Игра с названием %s уже сущеcтвует", name));
+            }
+
+        }
+
+    }
+    public void update(String name, String description,
+                                String category,
+                                Integer minPlayer,
+                                Integer maxPlayer
+                                ,Game game){
+        checkFields(name, minPlayer, maxPlayer, game);
+        game.setName(name);
+        game.setDescription(description);
+        game.setCategory(category);
+        game.setMinPlayers(minPlayer);
+        game.setMaxPlayers(maxPlayer);
+        this.save(game);
+    }
 }

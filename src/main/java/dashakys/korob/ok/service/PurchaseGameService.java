@@ -57,6 +57,7 @@ public class PurchaseGameService extends AbstractEntityService<PurchaseGame, Pur
             databaseGame.setCount(databaseGame.getCount() - purchaseGame.getCount());
             shopGameService.save(databaseGame);
         }
+
     }
 
     public void checkGamesCount(List<OrderedGame> games) {
