@@ -13,6 +13,7 @@ import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import dashakys.korob.ok.model.Role;
 import dashakys.korob.ok.service.SelectedProfileService;
 
 @Route(value = "adminHouse")
@@ -26,7 +27,7 @@ public class AdminHouse extends AppLayout {
         centeredLayout.setSizeFull();
         centeredLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         centeredLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-        if(selectedProfileService.getSelectedProfile()!= null) {
+        if (selectedProfileService.getSelectedProfile()!= null && selectedProfileService.getSelectedProfile().getRole()== Role.ADMIN){
             centeredLayout.add(getTabs(selectedProfileService));
 
             addToNavbar(false, centeredLayout);

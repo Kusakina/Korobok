@@ -72,6 +72,7 @@ public class ProfileView2 extends Div {
                     ButtonVariant.LUMO_TERTIARY);
             button.addClickListener(e -> this.createView(purchase, selectedPurchaseService));
             button.setIcon(new Icon(VaadinIcon.PLUS));
+            button.setWidth("20.0%");
         })).setHeader("Просмотреть заказ");
 
         var layout = new VerticalLayout();

@@ -55,7 +55,6 @@ public class LoginView2 extends Composite {
                     } catch (EntityServiceException e) {
                         Notification.show("Неверный логин/пароль");
                     }
-
                 }),
                 new RouterLink("Еще не залезал в закрома короба?", RegisterView.class)
         );

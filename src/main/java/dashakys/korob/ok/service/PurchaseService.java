@@ -2,10 +2,7 @@ package dashakys.korob.ok.service;
 
 import javax.transaction.Transactional;
 
-import dashakys.korob.ok.model.OrderedGame;
-import dashakys.korob.ok.model.Profile;
-import dashakys.korob.ok.model.Purchase;
-import dashakys.korob.ok.model.ShopGame;
+import dashakys.korob.ok.model.*;
 import dashakys.korob.ok.repository.PurchaseRepository;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +30,20 @@ public class PurchaseService extends AbstractEntityService<Purchase, PurchaseRep
         } catch (Exception e) {
             throw new EntityServiceException(e);
         }
+    }
+    public List <Purchase> findAllByManager(Profile admin) {
+        try {
+            return repository.findAllByManager(admin);
+        } catch (Exception e) {
+            throw new EntityServiceException(e);
+        }
+    }
+
+    public void update(Status status, Purchase purchase){
+
+        purchase.setStatus(status);
+        this.save(purchase);
+
     }
 
     public void createOrder(

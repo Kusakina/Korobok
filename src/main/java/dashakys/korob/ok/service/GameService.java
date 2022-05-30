@@ -54,6 +54,20 @@ public class GameService extends AbstractEntityService<Game, GameRepository> {
         return game;
     }
 
+    public Game create(String name,
+                       String description,
+                       String category,
+                       Integer minPlayer,
+                       Integer maxPlayer) {
+        checkName(name);
+        checkPlayers(minPlayer,maxPlayer);
+
+        Game game = new Game(name, description, category, minPlayer, maxPlayer);
+        save(game);
+
+        return game;
+    }
+
     public List<Game> findAllPurchasedByProfile(Profile profile) {
         try {
             return repository.findAllPurchasedByProfile(profile);
@@ -73,21 +87,27 @@ public class GameService extends AbstractEntityService<Game, GameRepository> {
     }
 
     public void checkFields(String name, Integer minPlayer, Integer maxPlayer, Game game) {
+        checkPlayers(minPlayer, maxPlayer);
+        if (!name.equals(game.getName())){
+            checkName(name);
+        }
+
+    }
+    public void checkName(String name){
+        if (name.isBlank()) {
+            throw new EntityServiceException("Название игры не должно состоять только из пробельных символов");
+        }
+
+        if (findByName(name).isPresent()) {
+            throw new EntityServiceException(String.format("Игра с названием %s уже сущеcтвует", name));
+        }
+    }
+    public void checkPlayers(Integer minPlayer, Integer maxPlayer){
         if (minPlayer!= null && minPlayer <= 0) {
             throw new EntityServiceException("Боюсь, так поиграть не получится?\n Укажите хотя бы одного игрока!");
         }
         if (maxPlayer!= null && maxPlayer <= 0) {
             throw new EntityServiceException("Боюсь, так поиграть не получится?\n Укажите хотя бы одного игрока!");
-        }
-        if (!name.equals(game.getName())){
-            if (name.isBlank()) {
-                throw new EntityServiceException("Название игры не должно состоять только из пробельных символов");
-            }
-
-            if (findByName(name).isPresent()) {
-                throw new EntityServiceException(String.format("Игра с названием %s уже сущеcтвует", name));
-            }
-
         }
 
     }

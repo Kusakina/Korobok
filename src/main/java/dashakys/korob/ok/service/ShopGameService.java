@@ -102,4 +102,8 @@ public class ShopGameService extends AbstractEntityService<ShopGame, ShopGameRep
         shopGame.setCount(count);
         this.save(shopGame);
     }
+    public void create(Integer price, Integer count, Game game){
+        checkFields(price, count);
+        addShopGame(game, price, count);
+    }
 }

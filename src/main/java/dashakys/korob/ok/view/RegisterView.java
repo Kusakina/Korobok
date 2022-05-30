@@ -38,7 +38,7 @@ public class RegisterView extends Composite {
                 new Button("Стать коробчаниным", event -> {
                     try {
                         selectedProfileService.signUp(username.getValue(), login.getValue(), password.getValue());
-                        UI.getCurrent().navigate("userHome");
+                        UI.getCurrent().navigate("userHouse");
                     } catch (EntityServiceException e) {
                         Notification.show(e.getMessage());
                     }

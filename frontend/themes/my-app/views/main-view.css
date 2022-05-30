@@ -6,3 +6,6 @@
 vaadin-grid {
     background: red;
 }
+vaadin-text-field::part(label) {
+  white-space: normal;
+}

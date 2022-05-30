@@ -7,6 +7,7 @@ import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -14,11 +15,13 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import dashakys.korob.ok.model.Role;
 import dashakys.korob.ok.model.ShopGame;
 import dashakys.korob.ok.service.*;
 
@@ -80,9 +83,8 @@ public class AdminCatalogView extends VerticalLayout {
         shopGameGrid.addColumn(ShopGame::getCount).setHeader("Количество").setSortable(true);
         //shopGameGrid.addComponentColumn(new Button(VaadinIcon.PLUS.create(), event -> method()));
         shopGameGrid.addColumn ( new ComponentRenderer<>( Button:: new, (button, shopGame)-> {
-            button.addThemeVariants(ButtonVariant.LUMO_ICON,
-                    ButtonVariant.LUMO_ERROR,
-                    ButtonVariant.LUMO_TERTIARY);
+            button.addThemeVariants();
+            //button.setText("Изменить");
             button.addClickListener(event -> {
                 try {
                     Dialog gameEditor = new Dialog();
@@ -97,12 +99,72 @@ public class AdminCatalogView extends VerticalLayout {
                     Notification.show(e.getMessage());
                 }
             });
-            button.setIcon(new Icon(VaadinIcon.EDIT));
+            //button.setIcon(new Icon(VaadinIcon.EDIT));
+            Icon b = new Icon("vaadin", "edit");
+            button.setIcon(b);
+            button.setWidth("20.0%");
         })).setHeader("Изменить");
-        if(selectedProfileService.getSelectedProfile()!= null) {
+        shopGameGrid.addColumn ( new ComponentRenderer<>( Button:: new, (button, shopGame)-> {
+            button.addThemeVariants(ButtonVariant.LUMO_ICON,
+                    ButtonVariant.LUMO_ERROR,
+                    ButtonVariant.LUMO_TERTIARY);
+            button.addClickListener(event -> {
+                try {
+                    Dialog deleteDialog = new Dialog();
+                    VerticalLayout gameEditorLayout = deleteGame(shopGame,deleteDialog,shopGameService,gameService);
+                    deleteDialog.add(gameEditorLayout);
+                    deleteDialog.setCloseOnOutsideClick(true);
+                    deleteDialog.open();
+                    gameService.getCategory();
+                    //editeGame(shopGame, gameEditor,shopGameService,gameService);
+                    //UI.getCurrent().getPage().reload();
+                } catch (EntityServiceException e) {
+                    Notification.show(e.getMessage());
+                }
+            });
+            //button.setIcon(new Icon(VaadinIcon.TRASH));
+            Icon a = new Icon("vaadin", "trash");
+            button.setIcon(a);
+            button.setWidth("20.0%");
+        })).setHeader("Удалить");
+        if(selectedProfileService.getSelectedProfile()!= null && selectedProfileService.getSelectedProfile().getRole()== Role.ADMIN) {
             add(filters, shopGameGrid);
         }
         listGames(shopGameService);
+    }
+
+    private VerticalLayout deleteGame(ShopGame shopGame, Dialog deleteDialog, ShopGameService shopGameService, GameService gameService) {
+        Label text = new Label("Вы действительно хотите удалить "+ shopGame.getGame().getName() +"?");
+        Button deleteButton =  new Button("Применить");
+        deleteButton.addClickListener(event ->{
+            try{
+                gameService.remove(shopGame.getGame());
+               // shopGameService.remove(shopGame);
+                deleteDialog.close();
+                shopGameGrid.getDataProvider().refreshAll();
+                shopGameGrid.setItems(shopGameService.findAll());
+                Notification.show("Игра удалена");
+
+            }catch (EntityServiceException e) {
+                Notification.show(e.getMessage());
+            }
+        });
+        deleteButton.setWidth("50.0%");
+
+
+        var layout = new VerticalLayout(
+                new H2("Удаление игры"), text, deleteButton
+           /* new Button("Применить", event ->{
+                updateListBox(categoryCheckBox.getSelectedItems());
+            })*/
+        );
+        layout.setSpacing(true);
+        layout.setPadding(false);
+        layout.setAlignItems(Alignment.STRETCH);
+        layout.getStyle().set("width", "300px").set("max-width", "100%");
+        layout.setAlignItems(Alignment.CENTER);
+        return layout;
+
     }
 
     private void configureFilter(ShopGameService shopGameService) {
@@ -126,24 +188,32 @@ public class AdminCatalogView extends VerticalLayout {
     }
 
     private VerticalLayout editGame(ShopGame shopGame, Dialog dialog, ShopGameService shopGameService, GameService gameService) {
+        String size = ("80.0%");
         TextField game = new TextField("Название игры");
         game.setValue(shopGame.getGameName());
+        game.setWidth(size);
         IntegerField price = new IntegerField("Стоимость игры");
         price.setValue(shopGame.getPrice());
+        price.setWidth(size);
         IntegerField count = new IntegerField("Количество коробков");
         count.setValue(shopGame.getCount());
-        TextField description = new TextField("Описание");
+        count.setWidth(size);
+        TextArea description = new TextArea("Описание");
         if(shopGame.getGame().getDescription()!= null) {
             description.setValue(shopGame.getGame().getDescription());
         }
+        description.setWidth(size);
         TextField category = new TextField("Категория");
         if(shopGame.getGame().getCategory()!= null) {
             category.setValue(shopGame.getGame().getCategory());
         }
+        category.setWidth(size);
         IntegerField minPlayer = new IntegerField("Минимальное количество игроков");
         minPlayer.setValue(shopGame.getGame().getMinPlayers());
+        minPlayer.setWidth(size);
         IntegerField maxPlayer = new IntegerField("Максимальное количество игроков");
         maxPlayer.setValue(shopGame.getGame().getMaxPlayers());
+        maxPlayer.setWidth(size);
 
         var setButton = new Button("Коробить");
         setButton.addClickListener( event -> {
@@ -186,7 +256,7 @@ public class AdminCatalogView extends VerticalLayout {
         GameEditor.setSpacing(true);
         GameEditor.setPadding(false);
         GameEditor.setAlignItems(FlexComponent.Alignment.STRETCH);
-        GameEditor.getStyle().set("width", "300px").set("max-width", "100%");
+        GameEditor.getStyle().set("width", "500px").set("max-width", "100%");
         GameEditor.setAlignItems(FlexComponent.Alignment.CENTER);
         return GameEditor;
 
@@ -215,7 +285,7 @@ public class AdminCatalogView extends VerticalLayout {
         layout.setSpacing(true);
         layout.setPadding(false);
         layout.setAlignItems(Alignment.STRETCH);
-        layout.getStyle().set("width", "300px").set("max-width", "100%");
+        layout.getStyle().set("width", "400px").set("max-width", "100%");
         layout.setAlignItems(Alignment.CENTER);
         return layout;
     }

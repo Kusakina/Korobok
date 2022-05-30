@@ -50,7 +50,10 @@ public class CartView2 extends VerticalLayout {
                         selectedProfileService.getSelectedProfile(),
                         cartService.getTotalCost()
                 );
-
+                Notification.show("Заказ создан");
+                cartService.removeAll();
+                orderedGameGrid.setItems(cartService.getGames());
+                orderedGameGrid.getDataProvider().refreshAll();
                 // UI.getCurrent().navigate("login2");
             } catch (EntityServiceException | ViewException e) {
                 Notification.show(e.getMessage());
@@ -65,6 +68,7 @@ public class CartView2 extends VerticalLayout {
                     ButtonVariant.LUMO_ERROR,
                     ButtonVariant.LUMO_TERTIARY);
             button.addClickListener(event -> this.lowerGame(shopGameService, orderedGame, cartService, total, createOrder));
+            button.setWidth("20.0%");
             button.setIcon(new Icon(VaadinIcon.MINUS));
         })).setHeader("уменьшить количество");
 
@@ -73,6 +77,7 @@ public class CartView2 extends VerticalLayout {
                     ButtonVariant.LUMO_ERROR,
                     ButtonVariant.LUMO_TERTIARY);
             button.addClickListener(event -> this.removeGame(orderedGame, cartService, total, createOrder));
+            button.setWidth("20.0%");
             button.setIcon(new Icon(VaadinIcon.TRASH));
         })).setHeader("Удалить");
 

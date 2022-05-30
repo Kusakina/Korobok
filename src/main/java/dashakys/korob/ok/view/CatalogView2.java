@@ -85,6 +85,7 @@ public class CatalogView2 extends VerticalLayout {
                 }
             });
             button.setIcon(new Icon(VaadinIcon.PLUS));
+            button.setWidth("20.0%");
         })).setHeader("Кинуть в короб");
         if(selectedProfileService.getSelectedProfile()!= null) {
             add(filters, shopGameGrid);
