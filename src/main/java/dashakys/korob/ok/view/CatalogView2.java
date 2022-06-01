@@ -166,17 +166,22 @@ public class CatalogView2 extends VerticalLayout {
         count.setReadOnly(true);
         TextArea description = new TextArea("Описание");
         if(shopGame.getGame().getDescription()!= null) {
-            description.setValue(shopGame.getGame().getDescription());
-        }else {
-            description.setValue("Информация отсутствует");
+            if(shopGame.getGame().getDescription()!= "") {
+                description.setValue(shopGame.getGame().getDescription());
+            }else{
+                description.setValue("Информация отсутствует");
+            }
+
         }
         description.setWidth(size);
         description.setReadOnly(true);
         TextField category = new TextField("Категория");
         if(shopGame.getGame().getCategory()!= null) {
-            category.setValue(shopGame.getGame().getCategory());
-        }else {
-            category.setValue("Информация отсутствует");
+            if(shopGame.getGame().getCategory()!="") {
+                category.setValue(shopGame.getGame().getCategory());
+            } else {
+                category.setValue("Информация отсутствует");
+            }
         }
         category.setWidth(size);
         category.setReadOnly(true);
