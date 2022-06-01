@@ -11,8 +11,11 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
@@ -87,6 +90,13 @@ public class CatalogView2 extends VerticalLayout {
             button.setIcon(new Icon(VaadinIcon.PLUS));
             button.setWidth("20.0%");
         })).setHeader("Кинуть в короб");
+        shopGameGrid.addItemClickListener(event -> {
+            Dialog gameInfo = new Dialog();
+            VerticalLayout gameEditorLayout = showGame(event.getItem(), gameInfo);
+            gameInfo.add(gameEditorLayout);
+            gameInfo.setCloseOnOutsideClick(true);
+            gameInfo.open();
+        });
         if(selectedProfileService.getSelectedProfile()!= null) {
             add(filters, shopGameGrid);
         }
@@ -139,5 +149,71 @@ public class CatalogView2 extends VerticalLayout {
         layout.getStyle().set("width", "300px").set("max-width", "100%");
         layout.setAlignItems(Alignment.CENTER);
         return layout;
+    }
+    private VerticalLayout showGame(ShopGame shopGame, Dialog dialog) {
+        String size = ("80.0%");
+        TextField game = new TextField("Название игры");
+        game.setValue(shopGame.getGameName());
+        game.setWidth(size);
+        game.setReadOnly(true);
+        IntegerField price = new IntegerField("Стоимость игры");
+        price.setValue(shopGame.getPrice());
+        price.setWidth(size);
+        price.setReadOnly(true);
+        IntegerField count = new IntegerField("Количество коробков");
+        count.setValue(shopGame.getCount());
+        count.setWidth(size);
+        count.setReadOnly(true);
+        TextArea description = new TextArea("Описание");
+        if(shopGame.getGame().getDescription()!= null) {
+            description.setValue(shopGame.getGame().getDescription());
+        }else {
+            description.setValue("Информация отсутствует");
+        }
+        description.setWidth(size);
+        description.setReadOnly(true);
+        TextField category = new TextField("Категория");
+        if(shopGame.getGame().getCategory()!= null) {
+            category.setValue(shopGame.getGame().getCategory());
+        }else {
+            category.setValue("Информация отсутствует");
+        }
+        category.setWidth(size);
+        category.setReadOnly(true);
+        IntegerField minPlayer = new IntegerField("Минимальное количество игроков");
+        minPlayer.setValue(shopGame.getGame().getMinPlayers());
+        minPlayer.setWidth(size);
+        minPlayer.setReadOnly(true);
+        IntegerField maxPlayer = new IntegerField("Максимальное количество игроков");
+        maxPlayer.setValue(shopGame.getGame().getMaxPlayers());
+        maxPlayer.setWidth(size);
+        maxPlayer.setReadOnly(true);
+
+        var okButton = new Button("Понятно!");
+        okButton.addClickListener( event -> {
+            dialog.close();
+        });
+
+        okButton.setWidth("50.0%");
+
+        VerticalLayout GameInfo = new VerticalLayout(
+                new H2("Информация об игре '" + shopGame.getGame().getName()+"'"),
+                game,
+                price,
+                count,
+                description,
+                category,
+                minPlayer,
+                maxPlayer,
+                okButton
+        );
+
+        GameInfo.setSpacing(true);
+        GameInfo.setPadding(false);
+        GameInfo.setAlignItems(FlexComponent.Alignment.STRETCH);
+        GameInfo.getStyle().set("width", "500px").set("max-width", "100%");
+        GameInfo.setAlignItems(FlexComponent.Alignment.CENTER);
+        return GameInfo;
+
     }
 }
