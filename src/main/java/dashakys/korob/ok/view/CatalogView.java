@@ -21,12 +21,14 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
+import dashakys.korob.ok.model.Game;
 import dashakys.korob.ok.service.CartService;
 import dashakys.korob.ok.model.ShopGame;
 import dashakys.korob.ok.service.*;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Route(value = "catalog")
 @PageTitle("catalog")
@@ -105,8 +107,9 @@ public class CatalogView extends VerticalLayout {
         shopGameGrid.setItems(shopGameService.findAllByName(filter.getValue()));
     }
     private void updateListBox(Set<String> selectedItems) {
-
-        shopGameGrid.setItems(shopGameService.findByFilter(gameService.findByFilter(selectedItems)));
+        var games = gameService.findByFilter(selectedItems);
+//        var shopGames = shopGameService.findByFilter(games);
+        shopGameGrid.setItems(games.stream().map(Game::getShopGame).collect(Collectors.toList()));
     }
 
     private void listGames() {

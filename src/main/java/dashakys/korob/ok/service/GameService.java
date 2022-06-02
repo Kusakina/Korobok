@@ -8,7 +8,6 @@ import javax.transaction.Transactional;
 
 import dashakys.korob.ok.model.Game;
 import dashakys.korob.ok.model.Profile;
-import dashakys.korob.ok.model.ShopGame;
 import dashakys.korob.ok.repository.GameRepository;
 import org.springframework.stereotype.Service;
 
@@ -76,14 +75,19 @@ public class GameService extends AbstractEntityService<Game, GameRepository> {
         }
     }
     public List<String> getCategory(){
-       return repository.searchCategory();
+       return repository.searchUniqueCategories();
     }
-    public  Set<Game> findByFilter(Set<String> selectedItems){
-            try {
-                return repository.findByCategoryIn(selectedItems);
-            } catch (Exception e) {
-                throw new EntityServiceException(e);
-            }
+
+    public Set<Game> findByFilter(Set<String> selectedItems){
+        if (selectedItems.isEmpty()) {
+            return Set.copyOf(findAll());
+        }
+
+        try {
+            return repository.findByCategoryIn(selectedItems);
+        } catch (Exception e) {
+            throw new EntityServiceException(e);
+        }
     }
 
     public void checkFields(String name, Integer minPlayer, Integer maxPlayer, Game game) {

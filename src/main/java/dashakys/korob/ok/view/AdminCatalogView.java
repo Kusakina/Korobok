@@ -21,12 +21,14 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import dashakys.korob.ok.model.Game;
 import dashakys.korob.ok.model.Role;
 import dashakys.korob.ok.model.ShopGame;
 import dashakys.korob.ok.service.*;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Route(value = "adminCatalog", layout = AdminHouse.class)
 @PageTitle("adminCatalog")
@@ -178,9 +180,11 @@ public class AdminCatalogView extends VerticalLayout {
     private void updateList(ShopGameService shopGameService) {
         shopGameGrid.setItems(shopGameService.findAllByName(filter.getValue()));
     }
-    private void updateListBox(Set<String> selectedItems, ShopGameService shopGameService, GameService gameService) {
 
-        shopGameGrid.setItems(shopGameService.findByFilter(gameService.findByFilter(selectedItems)));
+    private void updateListBox(Set<String> selectedItems, GameService gameService) {
+        var games = gameService.findByFilter(selectedItems);
+//        var shopGames = shopGameService.findByFilter(games);
+        shopGameGrid.setItems(games.stream().map(Game::getShopGame).collect(Collectors.toList()));
     }
 
     private void listGames(ShopGameService shopGameService) {
@@ -270,7 +274,7 @@ public class AdminCatalogView extends VerticalLayout {
         categoryCheckBox.addThemeVariants(CheckboxGroupVariant.LUMO_VERTICAL);
         Button addButton =  new Button("Применить");
         addButton.addClickListener(event ->{
-            updateListBox(categoryCheckBox.getSelectedItems(),shopGameService, gameService);
+            updateListBox(categoryCheckBox.getSelectedItems(), gameService);
             dialog.close();
         });
         addButton.setWidth("50.0%");

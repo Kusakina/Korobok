@@ -58,13 +58,6 @@ public class ShopGameService extends AbstractEntityService<ShopGame, ShopGameRep
             return findAll();
         } else{
             try {
-                /*String value = "";
-                Iterator<String> iter = selectedItems.iterator();
-                while (iter.hasNext()){
-                    value+="'";
-                    value+=iter.next();
-                    value+="', ";
-                }*/
                 return repository.findByGameIn(selectedItems);
             } catch (Exception e) {
                 throw new EntityServiceException(e);

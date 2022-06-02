@@ -26,7 +26,7 @@ public interface GameRepository extends EntityRepository<Game>  {
     List<Game> findAllPurchasedByProfile(@Param("profile") Profile profile);
 
     @Query("SELECT DISTINCT sg.category FROM Game sg ")
-    List<String> searchCategory ();
+    List<String> searchUniqueCategories();
 
     Set<Game> findByCategoryIn(Set<String> categories);
 }
