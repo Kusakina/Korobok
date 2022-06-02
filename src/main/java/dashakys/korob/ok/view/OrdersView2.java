@@ -77,7 +77,7 @@ public class OrdersView2 extends Div {
             });
             button.setWidth("20.0%");
             button.setIcon(new Icon(VaadinIcon.EDIT));
-        })).setHeader("Изменить сатус");
+        })).setHeader("Изменить статус");
 
         var layout = new VerticalLayout();
         layout.add(purchaseGrid);

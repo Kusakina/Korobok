@@ -50,21 +50,21 @@ public class UserHouse extends AppLayout {
 
 
     private Tabs getTabs(SelectedProfileService selectedProfileService){
+        RouterLink с = new RouterLink("Короб",CartView2.class);
+        с.setHighlightCondition(HighlightConditions.sameLocation());
+        Tab cart = new Tab(с, VaadinIcon.CART.create());
         RouterLink a = new RouterLink("Каталог",CatalogView2.class);
         a.setHighlightCondition(HighlightConditions.sameLocation());
         Tab catalogue = new Tab(a, VaadinIcon.TAGS.create());
         RouterLink b = new RouterLink("Профиль",ProfileView2.class);
         b.setHighlightCondition(HighlightConditions.sameLocation());
         Tab profile = new Tab(b, VaadinIcon.USER.create());
-        RouterLink с = new RouterLink("Короб",CartView2.class);
-        с.setHighlightCondition(HighlightConditions.sameLocation());
-        Tab cart = new Tab(с, VaadinIcon.CART.create());
         RouterLink d = new RouterLink("Выход",LoginView2.class);
+        Tab logout = new Tab(d, VaadinIcon.OUT.create());
         //d.setHighlightCondition(HighlightConditions.sameLocation());
         //UI ui = getUI().get();
         //d.afterNavigation(e-> getSession().close());
-        Tab logout = new Tab(d, VaadinIcon.OUT.create());
-        Tabs tabs = new Tabs(catalogue, profile, cart, logout);
+        Tabs tabs = new Tabs(cart, catalogue, profile, logout);
         //if (tabs.getSelectedTab() == logout){
             //UI.getCurrent().navigate(LoginView2.class);
             //ui.getPage().executeJs("");
