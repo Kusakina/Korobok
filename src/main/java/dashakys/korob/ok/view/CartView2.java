@@ -13,10 +13,10 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import dashakys.korob.ok.model.OrderedGame;
-import dashakys.korob.ok.model.ShopGame;
 import dashakys.korob.ok.service.*;
 
 import java.util.List;
+
 @Route(value = "cart", layout = UserHouse.class)
 @PageTitle("cart")
 public class CartView2 extends VerticalLayout {
@@ -54,6 +54,7 @@ public class CartView2 extends VerticalLayout {
                 cartService.removeAll();
                 orderedGameGrid.setItems(cartService.getGames());
                 orderedGameGrid.getDataProvider().refreshAll();
+                total.setText("Итого: " + cartService.getTotalCost());
                 // UI.getCurrent().navigate("login2");
             } catch (EntityServiceException | ViewException e) {
                 Notification.show(e.getMessage());
@@ -70,7 +71,7 @@ public class CartView2 extends VerticalLayout {
             button.addClickListener(event -> this.lowerGame(shopGameService, orderedGame, cartService, total, createOrder));
             button.setWidth("20.0%");
             button.setIcon(new Icon(VaadinIcon.MINUS));
-        })).setHeader("уменьшить количество");
+        })).setHeader("Уменьшить количество");
 
         orderedGameGrid.addColumn ( new ComponentRenderer<>( Button:: new, (button, orderedGame)-> {
            button.addThemeVariants(ButtonVariant.LUMO_ICON,
@@ -121,8 +122,7 @@ public class CartView2 extends VerticalLayout {
 
     }
 
-    private void lowerGame(ShopGameService shopGameService, OrderedGame orderedGame, CartService cartService, Label total, Button createOrder)
-    {
+    private void lowerGame(ShopGameService shopGameService, OrderedGame orderedGame, CartService cartService, Label total, Button createOrder) {
         int n = orderedGame.getCount() - 1 ;
         //int n = shopGameGrid.getEditor().getItem().getCount() - 1;
         if (n == 0) {
@@ -139,7 +139,8 @@ public class CartView2 extends VerticalLayout {
 
             //shopGameGrid.getDataProvider().refreshAll();
             listGames(cartService.getGames());
-            orderedGameGrid.getDataProvider().refreshItem(orderedGameGrid.getEditor().getItem());
+//            orderedGameGrid.getDataProvider().refreshItem(orderedGameGrid.getEditor().getItem());
+            orderedGameGrid.getDataProvider().refreshAll();
             total.setText("Итого: " + cartService.getTotalCost());
         }
     }
