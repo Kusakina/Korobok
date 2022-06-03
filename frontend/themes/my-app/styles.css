@@ -1,0 +1,27 @@
+@import url('./views/main-view.css');
+
+vaadin-button {
+    width: 560px;
+}
+
+.my-view  {
+    padding: 1em;
+}
+.my-view h1 {
+    /*Only applies to the h1 headers inside my-view*/
+    margin-top: 0;
+}
+p {
+    /*Applies to all p elements regardless of whether they are
+     located inside my-view*/
+    font-size: 1.2em;
+}
+.submit-button {
+    color: green;
+}
+.cancel-button {
+    color: red;
+}
+.wide-button {
+    width: 120px;
+}

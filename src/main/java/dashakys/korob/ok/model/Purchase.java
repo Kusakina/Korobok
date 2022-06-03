@@ -26,10 +26,23 @@ public class Purchase extends DatabaseEntity {
     @Column
     private int cost;
 
+    public Purchase(Profile client) {
+        this(client, null);
+    }
+
     public Purchase(Profile client, Profile manager) {
         this.client = client;
         this.manager = manager;
         this.status = Status.OPEN;
+    }
+    public Purchase(Profile client, Profile manager, int cost) {
+        this.client = client;
+        this.manager = manager;
+        this.status = Status.OPEN;
+        this.cost = cost;
+    }
+    public void setCost(int a){
+        this.cost = a;
     }
 
     @Override

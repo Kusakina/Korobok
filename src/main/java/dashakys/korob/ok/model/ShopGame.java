@@ -19,6 +19,12 @@ public class ShopGame extends DatabaseEntity {
     @Column
     private int count;
 
+    public ShopGame(ShopGame shopGame){
+        this.game = shopGame.game;
+        this.count = 1;
+        this.price = shopGame.price;
+    }
+
     @Override
     public String toString() {
         return "ShopGame{" +
@@ -26,5 +32,9 @@ public class ShopGame extends DatabaseEntity {
                 ", price=" + price +
                 ", count=" + count +
                 '}';
+    }
+
+    public String getGameName() {
+        return getGame().getName();
     }
 }

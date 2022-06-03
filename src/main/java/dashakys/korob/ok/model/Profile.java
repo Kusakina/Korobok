@@ -14,6 +14,10 @@ public class Profile extends DatabaseEntity {
     @Column
     private String name;
 
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @OneToOne(cascade = CascadeType.ALL)
     private Credentials credentials;
 }

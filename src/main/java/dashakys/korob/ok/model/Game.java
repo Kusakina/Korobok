@@ -5,16 +5,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = { "shopGame" })
 @ToString(callSuper = true, exclude = { "shopGame" })
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+
 public class Game extends DatabaseEntity {
     @Column
     private String name;
@@ -32,5 +31,16 @@ public class Game extends DatabaseEntity {
 
     public Game(String name) {
         this.name = name;
+    }
+    public Game(String name,
+                String description,
+                String category,
+                Integer minPlayer,
+                Integer maxPlayer) {
+        this.name = name;
+        this.category = category;
+        this.description = description;
+        this.maxPlayers = maxPlayer;
+        this.minPlayers = minPlayer;
     }
 }

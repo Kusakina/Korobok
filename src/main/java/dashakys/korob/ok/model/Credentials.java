@@ -28,9 +28,17 @@ public class Credentials extends DatabaseEntity {
         return password.hashCode();
     }
 
-    public Credentials(String login, long passwordHash) {
+    public Credentials(String login, String password) {
+        this(login, calculatePasswordHash(password));
+    }
+
+    private Credentials(String login, long passwordHash) {
         this.login = login;
         this.passwordHash = passwordHash;
+    }
+
+    public void setPassword(String password) {
+        this.passwordHash = calculatePasswordHash(password);
     }
 
     @Override
